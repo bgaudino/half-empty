@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Profile</h1>
+  <div>{{ profile.full_name }}</div>
+  <div>{{ profile.preferred_name }}</div>
+  <div>{{ user.email }}</div>
+  <a href="{% url 'profile_update' %}">Update</a>
+{% endblock %}

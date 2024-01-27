@@ -1,0 +1,6 @@
+/.env
+/half_empty/settings_local.py
+__pycache__/
+.DS_Store
+/static
+*.sqlite3

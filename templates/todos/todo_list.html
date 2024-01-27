@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Todos</h1>
+  <ul>
+    {% for todo in todos %}
+      <li>{{ todo.name }}</li>
+    {% empty %}
+      <p>Wow, you've done absolutely nothing with your life </p>
+    {% endfor %}
+  </ul>
+{% endblock %}

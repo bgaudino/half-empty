@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Profile {{ action|title }}</h1>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="{{ action|title }}">
+  </form>
+  {% if action == 'create' %}
+    <a href="{% url 'todo_list' %}">Maybe later</a>
+  {% endif %}
+{% endblock %}

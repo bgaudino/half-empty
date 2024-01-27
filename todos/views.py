@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseBadRequest
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, View
 
 from . import models
@@ -31,3 +31,10 @@ class TodoCreateView(LoginRequiredMixin, View):
         else:
             raise HttpResponseBadRequest()
         return render(request, self.template_name, {'todo': todo})
+
+
+class TodoToggleCompletionView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        todo = get_object_or_404(models.Todo, user=request.user, pk=pk)
+        todo.toggle_completion()
+        return render(request, 'todos/partials/_todo.html', {'todo': todo})

@@ -40,8 +40,8 @@ class Todo(models.Model):
     def __str__(self):
         return self.name
 
-    def complete(self):
-        self.completed_at = timezone.now()
+    def toggle_completion(self):
+        self.completed_at = None if self.is_completed else timezone.now()
         self.save()
 
     @property

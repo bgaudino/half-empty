@@ -1,12 +1,32 @@
 {% extends 'base.html' %}
 
+{% block javascript %}
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+{% endblock %}
+
 {% block content %}
   <h1>Todos</h1>
-  <ul>
+  <form
+    hx-post="{% url 'todo_create' %}" 
+    hx-target="#todos"
+    hx-swap="beforeend"
+  >
+    {% csrf_token %}
+    {{ add_todo_form }}
+    <button type="submit">Add</button>
+  </form>
+  <ul id="todos">
     {% for todo in todos %}
-      <li>{{ todo.name }}</li>
+      {% include 'todos/partials/_todo.html' with todo=todo %}
     {% empty %}
       <p>Wow, you've done absolutely nothing with your life </p>
     {% endfor %}
   </ul>
+  <script>
+    document.addEventListener('htmx:afterRequest', function({detail}) {
+      if (detail.successful && detail.requestConfig.elt instanceof HTMLFormElement) {
+        detail.requestConfig.elt.reset();
+      }
+    })
+  </script>
 {% endblock %}

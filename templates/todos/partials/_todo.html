@@ -1,0 +1,6 @@
+<li>
+  <input type="checkbox"
+    {% if todo.is_completed %}checked{% endif %}
+  >
+  <span>{{ todo.name }}</span>
+</li>

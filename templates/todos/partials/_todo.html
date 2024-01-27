@@ -1,8 +1,10 @@
-<li hx-target="this">
+<li
+  hx-target="this"
+  hx-include="[name='csrfmiddlewaretoken']"
+>
   <input type="checkbox"
     hx-post="{% url 'todo_toggle_completion' todo.pk %}"
     hx-swap="outerHTML"
-    hx-include="[name='csrfmiddlewaretoken']"
     {% if todo.is_completed %}checked{% endif %}
     >
   <span
@@ -10,4 +12,11 @@
       style="text-decoration: line-through"
     {% endif %}
   >{{ todo.name }}</span>
+  <button
+    type="button"
+    hx-post="{% url 'todo_trash' todo.pk %}"
+    hx-swap="delete"
+  >
+    X
+  </button>
 </li>

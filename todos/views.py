@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, View
 
@@ -12,7 +12,7 @@ class TodoListView(LoginRequiredMixin, ListView):
     context_object_name = 'todos'
 
     def get_queryset(self):
-        return self.model.objects.all()
+        return self.model.objects.filter(is_trashed=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -38,3 +38,11 @@ class TodoToggleCompletionView(LoginRequiredMixin, View):
         todo = get_object_or_404(models.Todo, user=request.user, pk=pk)
         todo.toggle_completion()
         return render(request, 'todos/partials/_todo.html', {'todo': todo})
+
+
+class TodoTrashView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        todo = get_object_or_404(models.Todo, user=request.user, pk=pk)
+        todo.is_trashed = True
+        todo.save()
+        return HttpResponse()

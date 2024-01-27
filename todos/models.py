@@ -18,7 +18,7 @@ class Project(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     name = models.CharField(max_length=255)
     deadline = models.DateTimeField(null=True, blank=True)
-    is_archived = models.BooleanField(default=False)
+    is_trashed = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('user', 'name')
@@ -32,7 +32,7 @@ class Todo(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
-    is_archived = models.BooleanField(default=False)
+    is_trashed = models.BooleanField(default=False)
     deadline = models.DateTimeField(null=True, blank=True)
     project = models.ForeignKey(Project, null=True, blank=True, on_delete=models.PROTECT)
     tags = models.ManyToManyField(Tag, blank=True)

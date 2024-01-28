@@ -12,8 +12,17 @@
       hx-swap="beforeend"
     >
       {% csrf_token %}
-      {{ add_todo_form }}
-      <button type="submit">Add</button>
+      <div style="display: flex;">
+        {{ add_todo_form.name }}
+        <button aria-label="Show more" data-show-controls="#addTodoFields" type="button"><i class="fa-solid fa-chevron-down"></i></button>
+      </div>
+      <div class="u-hide" id="addTodoFields">
+        {{ add_todo_form.deadline.label }}
+        {{ add_todo_form.deadline }}
+        {{ add_todo_form.description.label }}
+        {{ add_todo_form.description }}
+        <button type="submit">Add</button>
+      </div>
     </form>
   </div>
   <ul id="todos" class="p-list--divided">
@@ -26,6 +35,18 @@
       if (detail.successful && detail.requestConfig.elt instanceof HTMLFormElement) {
         detail.requestConfig.elt.reset();
       }
-    })
+    });
+    for (const toggle of document.querySelectorAll('[data-show-controls]')) {
+      toggle.onclick = function() {
+        document.querySelector(toggle.dataset.showControls).classList.toggle('u-hide');
+        const icon = toggle.querySelector('i');
+        const classes = ['fa-chevron-down', 'fa-chevron-up'];
+        if (icon.classList.contains(classes[1])) {
+          classes.reverse();
+        }
+        icon.classList.remove(classes[0]);
+        icon.classList.add(classes[1]);
+      }
+    }
   </script>
 {% endblock %}

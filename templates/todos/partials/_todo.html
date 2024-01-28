@@ -1,5 +1,5 @@
 <li
-  class="p-list__item row"
+  class="p-list__item"
   hx-target="this"
   hx-include="[name='csrfmiddlewaretoken']"
 >
@@ -29,4 +29,5 @@
   >
     <i class="fas fa-trash"></i>
   </button>
+  <a href="{% url 'todo_detail' todo.pk %}"><i class="fa-solid fa-circle-info"></i></a>
 </li>

@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
-from django.views.generic import ListView, View
+from django.views.generic import DetailView, ListView, View
 
 from . import models
 from . import forms
@@ -46,3 +46,11 @@ class TodoTrashView(LoginRequiredMixin, View):
         todo.is_trashed = True
         todo.save()
         return HttpResponse()
+
+
+class TodoDetailView(LoginRequiredMixin, DetailView):
+    model = models.Todo
+    context_object_name = 'todo'
+
+    def get_queryset(self):
+        return self.request.user.todo_set.all()

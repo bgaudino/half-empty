@@ -6,9 +6,10 @@ from . import models
 class TodoForm(forms.ModelForm):
     class Meta:
         model = models.Todo
-        fields = ('name', 'description')
+        fields = ('name', 'deadline', 'description')
         widgets = {
-            'description': forms.Textarea({'rows': 3})
+            'description': forms.Textarea({'rows': 3}),
+            'deadline': forms.DateTimeInput({'type': 'date'}),
         }
 
     def __init__(self, *args, **kwargs):

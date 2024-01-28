@@ -37,15 +37,18 @@
     </form>
     <button class="u-hide addTodoFields" type="submit" form="todoCreateForm">Add</button>
   </div>
-  <ul id="todos" class="p-list--divided">
-    {% for todo in todos %}
-      {% include 'todos/partials/_todo.html' with todo=todo %}
-    {% endfor %}
-  </ul>
-  <script>
-    document.addEventListener('htmx:afterRequest', function({detail}) {
-      if (detail.successful && detail.requestConfig.elt instanceof HTMLFormElement) {
-        detail.requestConfig.elt.reset();
+  <div class="p-card">
+    <h3>My Todos</h3>
+    <ul id="todos" class="p-list--divided p-card__content">
+      {% for todo in todos %}
+        {% include 'todos/partials/_todo.html' with todo=todo %}
+      {% endfor %}
+    </ul>
+  </div>
+    <script>
+      document.addEventListener('htmx:afterRequest', function({detail}) {
+        if (detail.successful && detail.requestConfig.elt instanceof HTMLFormElement) {
+          detail.requestConfig.elt.reset();
         if (detail.requestConfig.elt.id == "todoCreateForm") {
           const toggle = document.querySelector('[data-show-controls]');
           if (toggle.querySelector('i').classList.contains('fa-chevron-up')) {

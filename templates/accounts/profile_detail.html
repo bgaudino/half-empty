@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Profile</h1>
-  <div>{{ profile.full_name }}</div>
-  <div>{{ profile.preferred_name }}</div>
-  <div>{{ user.email }}</div>
-  <a href="{% url 'profile_update' %}">Update</a>
+  <div class="p-card">
+    <h3>Profile</h3>
+    <div class="p-card__content">
+      <p><strong>Full Name:</strong> {{ profile.full_name }}</p>
+      <p><strong>Preferred Name:</strong> {{ profile.preferred_name }}</p>
+      <p><strong>Email:</strong> {{ request.user.email }}</p>
+      <a class="p-button" href="{% url 'profile_update' %}">Update</a>
+    </div>
+  </div>
 {% endblock %}

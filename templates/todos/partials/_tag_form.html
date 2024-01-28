@@ -18,7 +18,13 @@
   {% endfor %} 
 </datalist>
 {% for tag in selected %}
-  <div class="p-chip">
-    {{ tag.name }}
+  <div class="p-chip--information">
+    <span class="p-chip__value">{{ tag.name }}</span>
+    <button
+      class="p-chip__dismiss"
+      type="button"
+      aria-label="Remove tag"
+      hx-post="{% url 'remove_tag' tag.pk %}"
+    ></button>
   </div>
 {% endfor %}

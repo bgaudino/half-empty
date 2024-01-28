@@ -7,7 +7,7 @@
   <div>{{ todo.name }}</div>
   <div>
     {% for tag in todo.tags.all %}
-      <span class="p-chip">{{ tag.name }}</span>
+      <span class="p-chip--information">{{ tag.name }}</span>
     {% endfor %}
   </div>
   {% if todo.deadline %}

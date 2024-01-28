@@ -58,7 +58,7 @@ class TodoDetailView(LoginRequiredMixin, DetailView):
         return self.request.user.todo_set.all()
 
 
-class TagFormView(LoginRequiredMixin, View):
+class TagAddView(LoginRequiredMixin, View):
     def post(self, request):
         form = forms.AddTagForm(request.POST)
         if not form.is_valid():
@@ -72,4 +72,15 @@ class TagFormView(LoginRequiredMixin, View):
             'tags': request.user.tag_set.all(),
             'selected': selected,
             'add_tag_form': forms.AddTagForm(),
+        })
+
+
+class TagRemoveView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        tag_ids = request.POST.getlist('tags', [])
+        selected = models.Tag.objects.filter(user=request.user, pk__in=tag_ids).exclude(pk=pk)
+        return render(request, 'todos/partials/_tag_form.html', {
+            'tags': request.user.tag_set.all(),
+            'selected': selected,
+            'add_tag_form': forms.AddTagForm(initial=request.POST),
         })

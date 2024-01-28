@@ -17,6 +17,8 @@ class TodoListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['add_todo_form'] = forms.TodoForm()
+        context['add_tag_form'] = forms.AddTagForm()
+        context['tags'] = self.request.user.tag_set.all()
         return context
 
 
@@ -54,3 +56,20 @@ class TodoDetailView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return self.request.user.todo_set.all()
+
+
+class TagFormView(LoginRequiredMixin, View):
+    def post(self, request):
+        form = forms.AddTagForm(request.POST)
+        if not form.is_valid():
+            return HttpResponseBadRequest()
+        tag, _ = models.Tag.objects.get_or_create(user=request.user, name=form.cleaned_data['tag'])
+        tag_ids = request.POST.getlist('tags', [])
+        if tag not in tag_ids:
+            tag_ids.append(tag.pk)
+        selected = models.Tag.objects.filter(user=request.user, pk__in=tag_ids)
+        return render(request, 'todos/partials/_tag_form.html', {
+            'tags': request.user.tag_set.all(),
+            'selected': selected,
+            'add_tag_form': forms.AddTagForm(),
+        })

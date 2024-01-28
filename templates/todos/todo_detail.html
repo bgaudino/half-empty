@@ -1,7 +1,17 @@
 {% extends 'base.html' %}
 
 {% block content %}
+  {% if todo.is_completed %}
+    <div>Completed at {{ todo.completed_at }}</div>
+  {% endif %}
   <div>{{ todo.name }}</div>
-  <div>{{ todo.deadline }}</div>
+  <div>
+    {% for tag in todo.tags.all %}
+      <span class="p-chip">{{ tag.name }}</span>
+    {% endfor %}
+  </div>
+  {% if todo.deadline %}
+    <div>{{ todo.deadline }}</div>
+  {% endif %}
   <div>{{ todo.description }}</div>
 {% endblock %}

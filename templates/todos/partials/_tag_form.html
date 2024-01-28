@@ -1,0 +1,24 @@
+{% csrf_token %}
+  {{ add_tag_form }}
+  <select multiple name="tags" id="id_tags" hidden>
+    {% for tag in tags %}
+      <option 
+        value="{{ tag.pk }}"
+        {% if tag in selected %}
+          selected 
+        {% endif %}
+      >
+        {{ tag.name }}
+      </option>
+    {% endfor %}
+  </select>
+<datalist id="tags">
+  {% for tag in tags %}
+    <option value="{{ tag.name }}"></option>
+  {% endfor %} 
+</datalist>
+{% for tag in selected %}
+  <div class="p-chip">
+    {{ tag.name }}
+  </div>
+{% endfor %}

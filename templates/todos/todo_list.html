@@ -7,23 +7,34 @@
 {% block content %}
   <div class="p-card">
     <form
+      id="todoCreateForm"
       hx-post="{% url 'todo_create' %}" 
+      hx-include="[name='tags']"
       hx-target="#todos"
       hx-swap="beforeend"
     >
       {% csrf_token %}
       <div style="display: flex;">
         {{ add_todo_form.name }}
-        <button aria-label="Show more" data-show-controls="#addTodoFields" type="button"><i class="fa-solid fa-chevron-down"></i></button>
+        <button aria-label="Show more" data-show-controls=".addTodoFields" type="button"><i class="fa-solid fa-chevron-down"></i></button>
       </div>
-      <div class="u-hide" id="addTodoFields">
+      <div class="u-hide addTodoFields">
         {{ add_todo_form.deadline.label }}
         {{ add_todo_form.deadline }}
         {{ add_todo_form.description.label }}
         {{ add_todo_form.description }}
-        <button type="submit">Add</button>
       </div>
     </form>
+    <form 
+      id="tagForm"
+      class="u-hide addTodoFields"
+      hx-post="{% url 'add_tag' %}"
+      hx-target="this"
+      hx-swap="innerHTML"
+      >
+      {% include 'todos/partials/_tag_form.html' %}
+    </form>
+    <button class="u-hide addTodoFields" type="submit" form="todoCreateForm">Add</button>
   </div>
   <ul id="todos" class="p-list--divided">
     {% for todo in todos %}
@@ -34,11 +45,19 @@
     document.addEventListener('htmx:afterRequest', function({detail}) {
       if (detail.successful && detail.requestConfig.elt instanceof HTMLFormElement) {
         detail.requestConfig.elt.reset();
+        if (detail.requestConfig.elt.id == "todoCreateForm") {
+          const toggle = document.querySelector('[data-show-controls]');
+          if (toggle.querySelector('i').classList.contains('fa-chevron-up')) {
+            toggle.click();
+          }
+        } 
       }
     });
     for (const toggle of document.querySelectorAll('[data-show-controls]')) {
       toggle.onclick = function() {
-        document.querySelector(toggle.dataset.showControls).classList.toggle('u-hide');
+        for (const element of document.querySelectorAll(toggle.dataset.showControls)) {
+          element.classList.toggle('u-hide');
+        }
         const icon = toggle.querySelector('i');
         const classes = ['fa-chevron-down', 'fa-chevron-up'];
         if (icon.classList.contains(classes[1])) {

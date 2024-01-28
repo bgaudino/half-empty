@@ -9,4 +9,5 @@ urlpatterns = [
     path('create/', views.TodoCreateView.as_view(), name='todo_create'),
     path('toggle_completion/<int:pk>/', views.TodoToggleCompletionView.as_view(), name='todo_toggle_completion'),
     path('trash/<int:pk>/', views.TodoTrashView.as_view(), name='todo_trash'),
+    path('add_tag/', views.TagFormView.as_view(), name='add_tag'),
 ]

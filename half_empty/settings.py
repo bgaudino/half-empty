@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'authtools',
 
     'accounts',
+    'half_empty',
     'todos',
 ]
 

@@ -1,33 +1,40 @@
 <li
-  class="p-list__item"
+  class="p-list__item todo"
   hx-target="this"
   hx-include="[name='csrfmiddlewaretoken']"
 >
-  <label class="p-checkbox">
-  <input
-    type="checkbox"
-    aria-labelledby="checkboxLabel{{ todo.pk }}"
-    class="p-checkbox__input"
-    hx-post="{% url 'todo_toggle_completion' todo.pk %}"
-    hx-swap="outerHTML"
-    {% if todo.is_completed %}checked{% endif %}
-  >
-  <span 
-    class="p-checkbox__label"
-    id="checkboxLabel{{ todo.pk }}"
-    {% if todo.is_completed %}
-      style="text-decoration: line-through"
-    {% endif %}
-  >
-    {{ todo.name }}
-  </span>
-  <button
-    type="button"
-    aria-label="Delete todo"
-    hx-post="{% url 'todo_trash' todo.pk %}"
-    hx-swap="delete"
-  >
-    <i class="fas fa-trash"></i>
-  </button>
-  <a href="{% url 'todo_detail' todo.pk %}"><i class="fa-solid fa-circle-info"></i></a>
+  <div>
+    <label class="p-checkbox">
+      <input
+        type="checkbox"
+        aria-labelledby="checkboxLabel{{ todo.pk }}"
+        class="p-checkbox__input"
+        hx-post="{% url 'todo_toggle_completion' todo.pk %}"
+        hx-swap="outerHTML"
+        {% if todo.is_completed %}checked{% endif %}
+      >
+      <span 
+        id="checkboxLabel{{ todo.pk }}"
+        {% if todo.is_completed %}
+          class="p-checkbox__label completed"
+        {% else %}
+          class="p-checkbox__label"
+        {% endif %}
+      >
+      {{ todo.name }}
+    </span>
+  </div>
+  <div>
+    <a class="p-button" href="{% url 'todo_detail' todo.pk %}" aria-label="Todo detail">
+      <i class="fa-solid fa-circle-info"></i>
+    </a>
+    <button
+      type="button"
+      aria-label="Delete todo"
+      hx-post="{% url 'todo_trash' todo.pk %}"
+      hx-swap="delete"
+    >
+      <i class="fas fa-trash"></i>
+    </button>
+  </div>
 </li>

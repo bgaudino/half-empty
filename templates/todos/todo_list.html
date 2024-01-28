@@ -5,21 +5,20 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Todos</h1>
-  <form
-    hx-post="{% url 'todo_create' %}" 
-    hx-target="#todos"
-    hx-swap="beforeend"
-  >
-    {% csrf_token %}
-    {{ add_todo_form }}
-    <button type="submit">Add</button>
-  </form>
-  <ul id="todos">
+  <div class="p-card">
+    <form
+      hx-post="{% url 'todo_create' %}" 
+      hx-target="#todos"
+      hx-swap="beforeend"
+    >
+      {% csrf_token %}
+      {{ add_todo_form }}
+      <button type="submit">Add</button>
+    </form>
+  </div>
+  <ul id="todos" class="p-list--divided">
     {% for todo in todos %}
       {% include 'todos/partials/_todo.html' with todo=todo %}
-    {% empty %}
-      <p>Wow, you've done absolutely nothing with your life </p>
     {% endfor %}
   </ul>
   <script>

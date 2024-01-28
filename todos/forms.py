@@ -7,6 +7,9 @@ class TodoForm(forms.ModelForm):
     class Meta:
         model = models.Todo
         fields = ('name', 'description')
+        widgets = {
+            'description': forms.Textarea({'rows': 3})
+        }
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)

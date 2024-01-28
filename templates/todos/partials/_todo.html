@@ -1,22 +1,32 @@
 <li
+  class="p-list__item row"
   hx-target="this"
   hx-include="[name='csrfmiddlewaretoken']"
 >
-  <input type="checkbox"
+  <label class="p-checkbox">
+  <input
+    type="checkbox"
+    aria-labelledby="checkboxLabel{{ todo.pk }}"
+    class="p-checkbox__input"
     hx-post="{% url 'todo_toggle_completion' todo.pk %}"
     hx-swap="outerHTML"
     {% if todo.is_completed %}checked{% endif %}
-    >
-  <span
+  >
+  <span 
+    class="p-checkbox__label"
+    id="checkboxLabel{{ todo.pk }}"
     {% if todo.is_completed %}
       style="text-decoration: line-through"
     {% endif %}
-  >{{ todo.name }}</span>
+  >
+    {{ todo.name }}
+  </span>
   <button
     type="button"
+    aria-label="Delete todo"
     hx-post="{% url 'todo_trash' todo.pk %}"
     hx-swap="delete"
   >
-    X
+    <i class="fas fa-trash"></i>
   </button>
 </li>

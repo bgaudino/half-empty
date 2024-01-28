@@ -1,17 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  {% if todo.is_completed %}
-    <div>Completed at {{ todo.completed_at }}</div>
-  {% endif %}
-  <div>{{ todo.name }}</div>
-  <div>
-    {% for tag in todo.tags.all %}
-      <span class="p-chip--information">{{ tag.name }}</span>
-    {% endfor %}
+  <div class="p-card">
+    <h4 class="p-muted-heading">{{ todo.name }}</h4>
+    <div>
+      {% for tag in todo.tags.all %}
+        <span class="p-chip--information">{{ tag.name }}</span>
+      {% endfor %}
+    </div>
+    {% if todo.is_completed %}
+      <p><i class="p-icon--success"></i> Completed at {{ todo.completed_at }}</p>
+    {% endif %}
+    {% if todo.deadline %}
+      <div>
+        <i class="fa-regular fa-calendar"></i>
+        <span><strong>Deadline:</span></strong>
+        <p>{{ todo.deadline }}</p>
+      </div>
+    {% endif %}
+    {% if todo.description %}
+      <i class="fa-regular fa-note-sticky"></i>
+      <span><strong>Description:</strong></span>
+      <p>{{ todo.description }}</p>
+    {% endif %}
   </div>
-  {% if todo.deadline %}
-    <div>{{ todo.deadline }}</div>
-  {% endif %}
-  <div>{{ todo.description }}</div>
 {% endblock %}

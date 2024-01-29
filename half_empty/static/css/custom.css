@@ -10,3 +10,7 @@
 .flex {
     display: flex;
 }
+
+#navigation {
+    margin-bottom: 1rem;
+}

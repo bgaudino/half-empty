@@ -11,7 +11,7 @@
       hx-post="{% url 'todo_create' %}" 
       hx-include="[name='tags']"
       hx-target="#todos"
-      hx-swap="beforeend"
+      hx-swap="beforeend show:#todos:bottom"
     >
       {% csrf_token %}
       {{ add_todo_form.name.label }}
@@ -39,6 +39,10 @@
   </div>
   <div class="p-card">
     <h3>My Todos</h3>
+    <form>
+      {{ filter_todos_form }}
+      <button type="submit">Filter</button>
+    </form>
     <ul id="todos" class="p-list--divided p-card__content">
       {% for todo in todos %}
         {% include 'todos/partials/_todo.html' with todo=todo %}

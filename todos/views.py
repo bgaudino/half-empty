@@ -8,19 +8,60 @@ from . import models
 from . import forms
 
 
-class TodoListView(LoginRequiredMixin, ListView):
-    model = models.Todo
+class HtmxMixin(View):
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        setattr(self.request, 'is_htmx', self.request.headers.get('HX-Request') == 'true')
+
+
+class TodoListView(LoginRequiredMixin, HtmxMixin, ListView):
     context_object_name = 'todos'
 
     def get_queryset(self):
-        return self.model.objects.filter(is_trashed=False)
+        form = forms.FilterTodosForm(self.request.GET)
+        form.full_clean()
+        self.filters = form.cleaned_data
+        qs = self.request.user.todo_set.filter(is_trashed=self.filters.get('in_trash'))
+        if tag := self.filters.get('tag'):
+            qs = qs.filter(tags__name=tag)
+        if self.filters.get('completed'):
+            qs = qs.filter(completed_at__isnull=False)
+        if deadline_start := self.filters.get('deadline_start'):
+            qs = qs.filter(deadline__gte=deadline_start)
+        if deadline_end := self.filters.get('deadline_end'):
+            qs = qs.filter(deadline__lte=deadline_end)
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['add_todo_form'] = forms.TodoForm()
-        context['add_tag_form'] = forms.AddTagForm()
-        context['tags'] = self.request.user.tag_set.all()
+        if not self.request.is_htmx:
+            context['add_todo_form'] = forms.TodoForm()
+            context['add_tag_form'] = forms.AddTagForm()
+            tags = self.request.user.tag_set.all()
+            context['tags'] = tags
+            context['filter_todos_form'] = forms.FilterTodosForm(initial=self.request.GET)
+        chips = []
+        if tag := self.filters.get('tag'):
+            chips.append(('Tag', tag))
+        if self.filters.get('completed'):
+            chips.append((None, 'Completed'))
+        if self.filters.get('in_trash'):
+            chips.append((None, 'In Trash'))
+        start = self.filters.get('deadline_start')
+        end = self.filters.get('deadline_end')
+        if start and end:
+            chips.append(('Deadline', f'{start} - {end}'))
+        elif start:
+            chips.append(('Deadline', f'{start} and later'))
+        elif end:
+            chips.append(('Deadline', f'{end} and earlier'))
+        context['chips'] = chips
         return context
+
+    def get_template_names(self):
+        if self.request.is_htmx:
+            return ('todos/partials/_todo_list.html')
+        return super().get_template_names()
 
 
 class TodoUpdateView(LoginRequiredMixin, UpdateView):
@@ -46,7 +87,7 @@ class TodoUpdateView(LoginRequiredMixin, UpdateView):
         return HttpResponse(headers={'HX-Redirect': todo.get_absolute_url()})
 
 
-class TodoCreateView(LoginRequiredMixin, View):
+class TodoCreateView(LoginRequiredMixin, HtmxMixin, View):
     form_class = forms.TodoForm
     template_name = 'todos/partials/_todo.html'
 

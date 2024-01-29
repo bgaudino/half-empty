@@ -39,41 +39,87 @@
   </div>
   <div class="p-card">
     <h3>My Todos</h3>
-    <form>
-      {{ filter_todos_form }}
-      <button type="submit">Filter</button>
+    <a id="filtersToggle">Show Filters</a>
+    <form
+      id="filtersForm"
+      hx-get="{% url 'todo_list' %}"
+      hx-swap="outerHTML"
+      hx-target="#todos"
+      hx-push-url="true"
+      class="u-hide"
+    >
+      {{ filter_todos_form.tag.label_tag }}
+      {{ filter_todos_form.tag }}
+      {{ filter_todos_form.deadline_start.label_tag }}
+      {{ filter_todos_form.deadline_start }}
+      {{ filter_todos_form.deadline_end.label_tag }}
+      {{ filter_todos_form.deadline_end }}
+      <label class="p-checkbox">
+        <input
+          type="checkbox"
+          name="completed"
+          aria-labelledby="completedLabel"
+          class="p-checkbox__input"
+          {% if request.GET.completed == 'on' %}
+            checked
+          {% endif %}
+        >
+        <span class="p-checkbox__label" id="completedLabel">{{ filter_todos_form.completed.label }}</span>
+      </label>
+      <label class="p-checkbox">
+        <input
+          type="checkbox"
+          name="in_trash"
+          aria-labelledby="inTrashLabel"
+          class="p-checkbox__input"
+          {% if request.GET.in_trash == 'on' %}
+            checked
+          {% endif %}
+        >
+        <span class="p-checkbox__label" id="inTrashLabel">{{ filter_todos_form.in_trash.label }}</span>
+      </label>
+      <button type="button" id="clearFiltersButton">Clear Filters</button>
+      <button type="submit">Apply Filters</button>
     </form>
-    <ul id="todos" class="p-list--divided p-card__content">
-      {% for todo in todos %}
-        {% include 'todos/partials/_todo.html' with todo=todo %}
-      {% endfor %}
-    </ul>
+    {% include 'todos/partials/_todo_list.html' %}
   </div>
     <script>
       document.addEventListener('htmx:afterRequest', function({detail}) {
-        if (detail.successful && detail.requestConfig.elt instanceof HTMLFormElement) {
+        if (detail.requestConfig.elt.id == 'todoCreateForm' && detail.successful) {
           detail.requestConfig.elt.reset();
-        if (detail.requestConfig.elt.id == "todoCreateForm") {
           const toggle = document.querySelector('[data-show-controls]');
           if (toggle.querySelector('i').classList.contains('fa-chevron-up')) {
             toggle.click();
           }
         } 
+      });
+      for (const toggle of document.querySelectorAll('[data-show-controls]')) {
+        toggle.onclick = function() {
+          for (const element of document.querySelectorAll(toggle.dataset.showControls)) {
+            element.classList.toggle('u-hide');
+          }
+          const icon = toggle.querySelector('i');
+          const classes = ['fa-chevron-down', 'fa-chevron-up'];
+          if (icon.classList.contains(classes[1])) {
+            classes.reverse();
+          }
+          icon.classList.remove(classes[0]);
+          icon.classList.add(classes[1]);
+      }}
+      document.getElementById('filtersToggle').onclick = function(e) {
+        document.getElementById('filtersForm').classList.toggle('u-hide');
+        e.target.innerText = e.target.innerText === 'Show Filters' ? 'Hide Filters' : 'Show Filters';
       }
-    });
-    for (const toggle of document.querySelectorAll('[data-show-controls]')) {
-      toggle.onclick = function() {
-        for (const element of document.querySelectorAll(toggle.dataset.showControls)) {
-          element.classList.toggle('u-hide');
+      document.getElementById('clearFiltersButton').onclick = function() {
+        const form = document.getElementById('filtersForm');
+        for (const element of form.querySelectorAll('input:not(hidden)')) {
+          if (element.type === 'checkbox') {
+            element.checked = false;
+          } else {
+            element.value = '';
+          }
         }
-        const icon = toggle.querySelector('i');
-        const classes = ['fa-chevron-down', 'fa-chevron-up'];
-        if (icon.classList.contains(classes[1])) {
-          classes.reverse();
-        }
-        icon.classList.remove(classes[0]);
-        icon.classList.add(classes[1]);
+        form.querySelector('button[type="submit"]').click();
       }
-    }
   </script>
 {% endblock %}

@@ -30,3 +30,11 @@ class TodoForm(forms.ModelForm):
 
 class AddTagForm(forms.Form):
     tag = forms.CharField(max_length=255, label='Tags', widget=forms.TextInput({'list': 'tags'}))
+
+
+class FilterTodosForm(forms.Form):
+    tag = forms.CharField(max_length=255, required=False)
+    deadline_start = forms.DateField(required=False, widget=forms.DateInput({'type': 'date', 'class': 'p-form__control'}))
+    deadline_end = forms.DateField(required=False, widget=forms.DateInput({'type': 'date'}))
+    completed = forms.BooleanField(required=False)
+    in_trash = forms.BooleanField(required=False)

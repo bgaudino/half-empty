@@ -1,0 +1,13 @@
+<ul id="todos" class="p-list--divided p-card__content">
+  {% for lead, value in chips %}
+    <span class="p-chip--information">
+      {% if lead %}
+        <span class="p-chip__lead">{{ lead }}</span>
+      {% endif %}
+      <span class="p-chip__value">{{ value }}</span>
+    </span>
+  {% endfor %}
+  {% for todo in todos %}
+    {% include 'todos/partials/_todo.html' with todo=todo %}
+  {% endfor %}
+</ul>

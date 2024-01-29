@@ -14,15 +14,15 @@
       hx-swap="beforeend show:#todos:bottom"
     >
       {% csrf_token %}
-      {{ add_todo_form.name.label }}
+      {{ add_todo_form.name.label_tag }}
       <div class="flex">
         {{ add_todo_form.name }}
         <button aria-label="Show more" data-show-controls=".addTodoFields" type="button"><i class="fa-solid fa-chevron-down"></i></button>
       </div>
       <div class="u-hide addTodoFields">
-        {{ add_todo_form.deadline.label }}
+        {{ add_todo_form.deadline.label_tag }}
         {{ add_todo_form.deadline }}
-        {{ add_todo_form.description.label }}
+        {{ add_todo_form.description.label_tag }}
         {{ add_todo_form.description }}
       </div>
     </form>

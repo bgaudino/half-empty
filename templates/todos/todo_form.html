@@ -13,11 +13,11 @@
       hx-include="[name='tags']"
     >
       {% csrf_token %}
-      {{ form.name.label }}
+      {{ form.name.label_tag }}
       {{ form.name }}
-      {{ form.deadline.label }}
+      {{ form.deadline.label_tag }}
       {{ form.deadline }}
-      {{ form.description.label }}
+      {{ form.description.label_tag }}
       {{ form.description }}
     </form>
     <form 

@@ -1,0 +1,17 @@
+<div class="p-card" id="quote">
+  <div class="p-card__content">
+    <blockquote class="p-pull-quote">
+      <p class="p-pull-quote__quote">{{ quote.text }}</p>
+      <span class="p-pull-quote__citation">{{ quote.attributed_to }}</span>
+    </blockquote>
+  </div>
+  <button
+    type="button"
+    class="p-button--dense"
+    hx-get="{% url 'get_quote' %}?previous={{ quote.pk }}"
+    hx-swap="outerHTML"
+    hx-target="#quote"
+  >
+    New Quote
+  </button>
+</div>

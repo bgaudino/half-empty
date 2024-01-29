@@ -6,6 +6,7 @@ from django.views.generic import DetailView, ListView, UpdateView, View
 
 from . import models
 from . import forms
+from quotes.models import Quote
 
 
 class HtmxMixin(View):
@@ -40,6 +41,7 @@ class TodoListView(LoginRequiredMixin, HtmxMixin, ListView):
             tags = self.request.user.tag_set.all()
             context['tags'] = tags
             context['filter_todos_form'] = forms.FilterTodosForm(initial=self.request.GET)
+            context['quote'] = Quote.objects.first()
         chips = []
         if tag := self.filters.get('tag'):
             chips.append(('Tag', tag))

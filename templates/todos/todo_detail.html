@@ -23,5 +23,6 @@
       <span><strong>Description:</strong></span>
       <p>{{ todo.description }}</p>
     {% endif %}
+    <a class="p-button" href="{% url 'todo_update' todo.pk %}">Edit</a>
   </div>
 {% endblock %}

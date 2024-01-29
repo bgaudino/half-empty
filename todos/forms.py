@@ -13,7 +13,7 @@ class TodoForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput({'autoFocus': True}),
             'description': forms.Textarea({'rows': 3}),
-            'deadline': forms.DateTimeInput({'type': 'date'}),
+            'deadline': forms.DateTimeInput({'type': 'datetime-local'}),
         }
 
     def __init__(self, *args, **kwargs):

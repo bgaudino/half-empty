@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 
 
@@ -39,6 +40,9 @@ class Todo(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('todo_detail', kwargs={'pk': self.pk})
 
     def toggle_completion(self):
         self.completed_at = None if self.is_completed else timezone.now()

@@ -1,7 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.forms.models import BaseModelForm
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
-from django.views.generic import DetailView, ListView, View
+from django.views.generic import DetailView, ListView, UpdateView, View
 
 from . import models
 from . import forms
@@ -20,6 +21,29 @@ class TodoListView(LoginRequiredMixin, ListView):
         context['add_tag_form'] = forms.AddTagForm()
         context['tags'] = self.request.user.tag_set.all()
         return context
+
+
+class TodoUpdateView(LoginRequiredMixin, UpdateView):
+    form_class = forms.TodoForm
+
+    def get_queryset(self):
+        return self.request.user.todo_set.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['add_tag_form'] = forms.AddTagForm()
+        context['tags'] = self.request.user.tag_set.all()
+        context['selected'] = self.object.tags.all()
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form: BaseModelForm):
+        todo = form.save()
+        return HttpResponse(headers={'HX-Redirect': todo.get_absolute_url()})
 
 
 class TodoCreateView(LoginRequiredMixin, View):

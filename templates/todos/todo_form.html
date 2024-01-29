@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block javascript %}
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="p-card">
+    <h3>Update Todo</h3>
+    <form
+      id="todoUpdateForm"
+      hx-post="{% url 'todo_update' form.instance.pk %}"
+      hx-include="[name='tags']"
+    >
+      {% csrf_token %}
+      {{ form.name.label }}
+      {{ form.name }}
+      {{ form.deadline.label }}
+      {{ form.deadline }}
+      {{ form.description.label }}
+      {{ form.description }}
+    </form>
+    <form 
+      id="tagForm"
+      class="addTodoFields"
+      hx-post="{% url 'add_tag' %}"
+      hx-target="this"
+      hx-swap="innerHTML"
+    >
+      {% include 'todos/partials/_tag_form.html' %}
+    </form>
+    <a class="p-button" href="{% url 'todo_detail' form.instance.pk %}">Cancel</a>
+    <button type="submit" form="todoUpdateForm">Save</button>
+  </div>
+{% endblock %}

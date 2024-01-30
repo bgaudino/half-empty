@@ -30,6 +30,11 @@
       <div class="u-hide addTodoFields">
         {{ add_todo_form.project.label_tag }}
         {{ add_todo_form.project }}
+        <datalist id="tags">
+          {% for tag in tags %}
+            <option value="{{ tag.name }}"></option>
+          {% endfor %} 
+        </datalist>
         {{ add_todo_form.deadline.label_tag }}
         {{ add_todo_form.deadline }}
         {{ add_todo_form.description.label_tag }}

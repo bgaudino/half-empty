@@ -30,7 +30,7 @@ class TodoListView(LoginRequiredMixin, QuoteMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if not self.request.is_htmx:
-            context['add_todo_form'] = forms.TodoForm()
+            context['add_todo_form'] = forms.TodoForm(user=self.request.user)
             context['add_tag_form'] = forms.AddTagForm()
             tags = self.request.user.tag_set.all()
             context['tags'] = tags

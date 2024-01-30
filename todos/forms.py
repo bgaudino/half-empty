@@ -6,7 +6,7 @@ from . import models
 class TodoForm(forms.ModelForm):
     class Meta:
         model = models.Todo
-        fields = ('name', 'deadline', 'description', 'tags')
+        fields = ('name', 'project', 'deadline', 'description', 'tags')
         widgets = {
             'name': forms.TextInput({
                 'placeholder': 'Add something to do',
@@ -21,8 +21,13 @@ class TodoForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
+        tag_queryset = models.Tag.objects.none()
+        project_queryset = models.Project.objects.none()
         if self.user:
-            self.fields['tags'].queryset = self.user.tag_set.all()
+            tag_queryset = self.user.tag_set.all()
+            project_queryset = self.user.project_set.all()
+        self.fields['tags'].queryset = tag_queryset
+        self.fields['project'].queryset = project_queryset
 
     def save(self, commit=True):
         self.instance.user = self.user

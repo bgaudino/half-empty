@@ -9,13 +9,7 @@ from . import forms
 from quotes.models import Quote
 
 
-class HtmxMixin(View):
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        setattr(self.request, 'is_htmx', self.request.headers.get('HX-Request') == 'true')
-
-
-class TodoListView(LoginRequiredMixin, HtmxMixin, ListView):
+class TodoListView(LoginRequiredMixin, ListView):
     context_object_name = 'todos'
 
     def get_queryset(self):
@@ -89,7 +83,7 @@ class TodoUpdateView(LoginRequiredMixin, UpdateView):
         return HttpResponse(headers={'HX-Redirect': todo.get_absolute_url()})
 
 
-class TodoCreateView(LoginRequiredMixin, HtmxMixin, View):
+class TodoCreateView(LoginRequiredMixin, View):
     form_class = forms.TodoForm
     template_name = 'todos/partials/_todo.html'
 

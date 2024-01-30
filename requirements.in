@@ -1,2 +1,5 @@
 django~=4.2
 django-authtools
+dj-database-url
+psycopg2
+python-dotenv

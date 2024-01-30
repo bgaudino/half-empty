@@ -30,6 +30,7 @@
     </a>
     <button
       type="button"
+      class="p-button--negative"
       aria-label="Delete todo"
       hx-post="{% url 'todo_trash' todo.pk %}"
       hx-swap="delete"

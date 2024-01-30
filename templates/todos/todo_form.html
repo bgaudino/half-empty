@@ -30,6 +30,6 @@
       {% include 'todos/partials/_tag_form.html' %}
     </form>
     <a class="p-button" href="{% url 'todo_detail' form.instance.pk %}">Cancel</a>
-    <button type="submit" form="todoUpdateForm">Save</button>
+    <button class="p-button--brand" type="submit" form="todoUpdateForm">Save</button>
   </div>
 {% endblock %}

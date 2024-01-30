@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+from django.contrib import messages
+
 import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -122,3 +124,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.User'
 
 LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'debug',
+    messages.INFO: 'infofmation',
+    messages.SUCCESS: 'positive',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'negative',
+}

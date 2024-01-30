@@ -4,6 +4,7 @@ from . import views
 
 
 urlpatterns = [
+    path('password_change/', views.PasswordChangeView.as_view(), name='password_change'),
     path('', include('django.contrib.auth.urls')),
     path('profile/create/', views.ProfileCreateView.as_view(), name='profile_create'),
     path('profile/update/', views.ProfileUpdateView.as_view(), name='profile_update'),

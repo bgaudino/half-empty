@@ -1,4 +1,6 @@
+from django.contrib import messages
 from django.contrib.auth import login
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -67,8 +69,17 @@ class SignupView(FormView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
+        messages.add_message(self.request, messages.SUCCESS, 'Your account was successfully created. Take a minute to fill out your profile')
         return super().form_valid(form)
 
 
 class SecurityView(TemplateView):
     template_name = 'registration/security.html'
+
+
+class PasswordChangeView(auth_views.PasswordChangeView):
+    success_url = reverse_lazy('security')
+
+    def form_valid(self, form):
+        messages.add_message(self.request, messages.SUCCESS, 'Your password was changed')
+        return super().form_valid(form)

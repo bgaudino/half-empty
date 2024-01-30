@@ -75,6 +75,23 @@
   </header>
   <main class="l-main">
     <div class="row">
+      {% if messages %}
+        {% for message in messages %}
+          <div id="notification-{{ forloop.counter }}" class="p-notification--{{ message.tags }}">
+            <div class="p-notification__content">
+              <p class="p-notification__message">{{ message }}</p>
+              <button class="p-notification__close" aria-controls="notification" data-dismisses="notification-{{ forloop.counter }}">Close</button>
+            </div>
+          </div>
+        {% endfor %}
+        <script>
+          document.addEventListener('click', function(e) {
+            if (e.target.dataset.dismisses) {
+              document.getElementById(e.target.dataset.dismisses).remove();
+            }
+          })
+        </script>
+      {% endif %}
       {% block content %}
       {% endblock %}
     </div>

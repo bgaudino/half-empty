@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="p-card">
+    <h3>Security Settings</h3>
+    <div class="p-card__content">
+      <a href="{% url 'password_change' %}">Change password</a>
+    </div>
+  </div>
+{% endblock %}

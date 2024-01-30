@@ -2,7 +2,7 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, DetailView, UpdateView, FormView
+from django.views.generic import CreateView, DetailView, UpdateView, FormView, TemplateView
 
 from . import models
 from . import forms
@@ -68,3 +68,7 @@ class SignupView(FormView):
         user = form.save()
         login(self.request, user)
         return super().form_valid(form)
+
+
+class SecurityView(TemplateView):
+    template_name = 'registration/security.html'

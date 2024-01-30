@@ -7,11 +7,12 @@ class TodoForm(forms.ModelForm):
     class Meta:
         model = models.Todo
         fields = ('name', 'deadline', 'description', 'tags')
-        labels = {
-            'name': 'New todo'
-        }
         widgets = {
-            'name': forms.TextInput({'autoFocus': True}),
+            'name': forms.TextInput({
+                'placeholder': 'Add something to do',
+                'autoFocus': True,
+                'ariaLabel': 'Todo name',
+            }),
             'description': forms.Textarea({'rows': 3}),
             'deadline': forms.DateTimeInput({'type': 'datetime-local'}),
         }

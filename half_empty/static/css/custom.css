@@ -7,8 +7,9 @@
     text-decoration: line-through;
 }
 
-.flex {
+.addTodo {
     display: flex;
+    padding-top: 1rem;
 }
 
 #navigation {

@@ -151,3 +151,10 @@ class ProjectListView(LoginRequiredMixin, QuoteMixin, ListView):
 
     def get_queryset(self):
         return self.request.user.project_set.all()
+
+
+class ProjectDetailView(LoginRequiredMixin, DetailView):
+    context_object_name = 'project'
+
+    def get_queryset(self):
+        return self.request.user.project_set.all()

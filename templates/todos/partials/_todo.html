@@ -34,6 +34,7 @@
       aria-label="Delete todo"
       hx-post="{% url 'todo_trash' todo.pk %}"
       hx-swap="delete"
+      hx-confirm="Are you sure you want to delete this todo?"
     >
       <i class="fas fa-trash"></i>
     </button>

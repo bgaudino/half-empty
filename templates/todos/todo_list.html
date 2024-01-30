@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block javascript %}
-  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  {% include 'core/js/htmx.html' %}
 {% endblock %}
 
 {% block content %}
@@ -15,10 +15,18 @@
       hx-swap="beforeend show:#todos:bottom"
     >
       {% csrf_token %}
-      <div class="addTodo">
-        {{ add_todo_form.name }}
-        <button aria-label="Show more" data-show-controls=".addTodoFields" type="button"><i class="fa-solid fa-chevron-down"></i></button>
-      </div>
+      {{ add_todo_form.name }}
+      <button
+        id="#toggleFieldsButton"
+        class="p-button--link has-icon"
+        type="button"
+        data-toggle=".addTodoFields"
+        data-show-text="More fields"
+        data-hide-text="Less fields"
+      >
+        <span>More fields</span>
+        <i class="p-icon--chevron-down"></i>
+      </button>
       <div class="u-hide addTodoFields">
         {{ add_todo_form.deadline.label_tag }}
         {{ add_todo_form.deadline }}
@@ -37,7 +45,16 @@
     </form>
     <button class="u-hide addTodoFields p-button--brand" type="submit" form="todoCreateForm">Add</button>
     <h3>My Todos</h3>
-    <a id="filtersToggle">Show Filters</a>
+    <button
+      class="p-button--link has-icon"
+      type="button"
+      data-toggle="#filtersForm"
+      data-show-text="Show filters"
+      data-hide-text="Hide filters"
+    >
+      <span>Show filters</span>
+      <i class="p-icon--chevron-down"></i>
+    </button>
     <form
       id="filtersForm"
       hx-get="{% url 'todo_list' %}"
@@ -85,28 +102,22 @@
       document.addEventListener('htmx:afterRequest', function({detail}) {
         if (detail.requestConfig.elt.id == 'todoCreateForm' && detail.successful) {
           detail.requestConfig.elt.reset();
-          const toggle = document.querySelector('[data-show-controls]');
-          if (toggle.querySelector('i').classList.contains('fa-chevron-up')) {
-            toggle.click();
-          }
         } 
       });
-      for (const toggle of document.querySelectorAll('[data-show-controls]')) {
+     for (const toggle of document.querySelectorAll('[data-toggle]')) {
         toggle.onclick = function() {
-          for (const element of document.querySelectorAll(toggle.dataset.showControls)) {
-            element.classList.toggle('u-hide');
+          for (const element of document.querySelectorAll(toggle.dataset.toggle)) {
+            if (element.classList.contains('u-hide')) {
+              element.classList.remove('u-hide');
+              toggle.querySelector('span').innerText = toggle.dataset.hideText;
+              toggle.querySelector('i').className = 'p-icon--chevron-down'
+            } else {
+              element.classList.add('u-hide');
+              toggle.querySelector('span').innerText = toggle.dataset.showText;
+              toggle.querySelector('i').className = 'p-icon--chevron-up'
+            }
           }
-          const icon = toggle.querySelector('i');
-          const classes = ['fa-chevron-down', 'fa-chevron-up'];
-          if (icon.classList.contains(classes[1])) {
-            classes.reverse();
-          }
-          icon.classList.remove(classes[0]);
-          icon.classList.add(classes[1]);
-      }}
-      document.getElementById('filtersToggle').onclick = function(e) {
-        document.getElementById('filtersForm').classList.toggle('u-hide');
-        e.target.innerText = e.target.innerText === 'Show Filters' ? 'Hide Filters' : 'Show Filters';
+        }
       }
       document.getElementById('clearFiltersButton').onclick = function() {
         const form = document.getElementById('filtersForm');

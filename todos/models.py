@@ -3,6 +3,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
+from core.models import TimeStampedModel
+
 
 class Tag(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
@@ -15,7 +17,7 @@ class Tag(models.Model):
         return self.name
 
 
-class Project(models.Model):
+class Project(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     name = models.CharField(max_length=255)
     deadline = models.DateTimeField(null=True, blank=True)
@@ -28,7 +30,7 @@ class Project(models.Model):
         return self.name
 
 
-class Todo(models.Model):
+class Todo(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)

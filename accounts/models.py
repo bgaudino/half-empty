@@ -2,6 +2,8 @@ from django.db import models
 
 from authtools.models import AbstractEmailUser
 
+from core.models import TimeStampedModel
+
 
 class User(AbstractEmailUser):
     def get_short_name(self):
@@ -15,7 +17,7 @@ class User(AbstractEmailUser):
         return super().get_full_name()
 
 
-class Profile(models.Model):
+class Profile(TimeStampedModel):
     user = models.OneToOneField(User, on_delete=models.PROTECT)
     full_name = models.CharField(max_length=255)
     preferred_name = models.CharField(max_length=255, blank=True)

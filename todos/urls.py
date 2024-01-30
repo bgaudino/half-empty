@@ -12,4 +12,5 @@ urlpatterns = [
     path('trash/<int:pk>/', views.TodoTrashView.as_view(), name='todo_trash'),
     path('add_tag/', views.TagAddView.as_view(), name='add_tag'),
     path('remove_tag/<int:pk>/', views.TagRemoveView.as_view(), name='remove_tag'),
+    path('projects/', views.ProjectListView.as_view(), name='project_list'),
 ]

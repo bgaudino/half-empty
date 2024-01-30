@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block javascript %}
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+{% endblock %}
+
+{% block content %}
+  {% include 'quotes/partials/_quote.html' %}
+  <div class="p-card">
+    <h3>My Projects</h3>
+    <ul class="p-list--divided">
+      {% for project in projects %}
+        <li class="p-list__item">{{ project.name }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

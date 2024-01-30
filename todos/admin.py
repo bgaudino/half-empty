@@ -11,3 +11,8 @@ class TodoAdmin(admin.ModelAdmin):
 @admin.register(models.Tag)
 class TagAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(models.Project)
+class ProjectAdmin(admin.ModelAdmin):
+    pass

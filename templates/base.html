@@ -37,6 +37,15 @@
             >
               <a class="p-navigation__link" href="{% url 'todo_list' %}">Todos</a>
             </li>
+            <li 
+              {% if '/projects' in request.path.startswith %}
+                class="p-navigation__item is-selected"
+              {% else %}
+                class="p-navigation__item"
+              {% endif %}
+            >
+              <a class="p-navigation__link" href="{% url 'project_list' %}">Projects</a>
+            </li>
           {% endif %}
           <li
             {% if '/accounts' in request.path %}

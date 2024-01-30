@@ -6,10 +6,10 @@ from django.views.generic import DetailView, ListView, UpdateView, View
 
 from . import models
 from . import forms
-from quotes.models import Quote
+from quotes.views import QuoteMixin
 
 
-class TodoListView(LoginRequiredMixin, ListView):
+class TodoListView(LoginRequiredMixin, QuoteMixin, ListView):
     context_object_name = 'todos'
 
     def get_queryset(self):
@@ -35,7 +35,6 @@ class TodoListView(LoginRequiredMixin, ListView):
             tags = self.request.user.tag_set.all()
             context['tags'] = tags
             context['filter_todos_form'] = forms.FilterTodosForm(initial=self.request.GET)
-            context['quote'] = Quote.objects.first()
         chips = []
         if tag := self.filters.get('tag'):
             chips.append(('Tag', tag))
@@ -145,3 +144,10 @@ class TagRemoveView(LoginRequiredMixin, View):
             'selected': selected,
             'add_tag_form': forms.AddTagForm(initial=request.POST),
         })
+
+
+class ProjectListView(LoginRequiredMixin, QuoteMixin, ListView):
+    context_object_name = 'projects'
+
+    def get_queryset(self):
+        return self.request.user.project_set.all()

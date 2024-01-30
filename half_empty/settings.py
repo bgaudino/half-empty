@@ -35,7 +35,6 @@ INSTALLED_APPS = [
 
     'accounts',
     'core',
-    'half_empty',
     'todos',
     'quotes',
 ]

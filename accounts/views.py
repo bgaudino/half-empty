@@ -1,9 +1,11 @@
+from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse, reverse_lazy
 from django.shortcuts import redirect
-from django.views.generic import CreateView, DetailView, UpdateView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, DetailView, UpdateView, FormView
 
 from . import models
+from . import forms
 
 
 class NoProfileMixin:
@@ -50,3 +52,19 @@ class ProfileUpdateView(LoginRequiredMixin, NoProfileMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['action'] = 'update'
         return context
+
+
+class SignupView(FormView):
+    form_class = forms.SignupForm
+    template_name = 'registration/signup.html'
+    success_url = reverse_lazy(('profile_detail'))
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return redirect(self.success_url)
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return super().form_valid(form)

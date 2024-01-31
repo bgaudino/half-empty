@@ -19,6 +19,7 @@ class TodoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
+        self.project = kwargs.pop('project', None)
         super().__init__(*args, **kwargs)
 
         tag_queryset = models.Tag.objects.none()
@@ -28,6 +29,11 @@ class TodoForm(forms.ModelForm):
             project_queryset = self.user.project_set.all()
         self.fields['tags'].queryset = tag_queryset
         self.fields['project'].queryset = project_queryset
+
+        if self.project:
+            self.fields['project'].widget = forms.HiddenInput()
+            self.fields['project'].initial = self.project
+            self.fields['project'].queryset = models.Project.objects.filter(pk=self.project.pk)
 
     def save(self, commit=True):
         self.instance.user = self.user

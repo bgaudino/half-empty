@@ -2,6 +2,8 @@
 
 {% block javascript %}
   {% include 'core/js/htmx.html' %}
+  {% load static %}
+  <script src="{% static 'js/toggle.js' %}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -111,21 +113,6 @@
           detail.requestConfig.elt.reset();
         } 
       });
-     for (const toggle of document.querySelectorAll('[data-toggle]')) {
-        toggle.onclick = function() {
-          for (const element of document.querySelectorAll(toggle.dataset.toggle)) {
-            if (element.classList.contains('u-hide')) {
-              element.classList.remove('u-hide');
-              toggle.querySelector('span').innerText = toggle.dataset.hideText;
-              toggle.querySelector('i').className = 'p-icon--chevron-down'
-            } else {
-              element.classList.add('u-hide');
-              toggle.querySelector('span').innerText = toggle.dataset.showText;
-              toggle.querySelector('i').className = 'p-icon--chevron-up'
-            }
-          }
-        }
-      }
       document.getElementById('clearFiltersButton').onclick = function() {
         const form = document.getElementById('filtersForm');
         for (const element of form.querySelectorAll('input:not(hidden)')) {

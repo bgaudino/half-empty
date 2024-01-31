@@ -30,6 +30,29 @@ class Project(TimeStampedModel):
         return self.name
 
 
+class TodoQuerySet(models.QuerySet):
+    def with_project(self):
+        return self.select_related('project')
+
+    def with_tags(self):
+        return self.prefetch_related('tags')
+
+    def active(self):
+        return self.filter(is_trashed=False)
+
+    def trashed(self):
+        return self.filter(is_trashed=True)
+
+    def todo(self):
+        return self.filter(completed_at__isnull=True)
+
+    def completed(self):
+        return self.filter(completed_at__isnull=False)
+
+    def overdue(self):
+        return self.filter(deadline__lt=timezone.now())
+
+
 class Todo(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     name = models.CharField(max_length=255)
@@ -39,6 +62,8 @@ class Todo(TimeStampedModel):
     deadline = models.DateTimeField(null=True, blank=True)
     project = models.ForeignKey(Project, null=True, blank=True, on_delete=models.PROTECT)
     tags = models.ManyToManyField(Tag, blank=True)
+
+    objects = TodoQuerySet.as_manager()
 
     def __str__(self):
         return self.name

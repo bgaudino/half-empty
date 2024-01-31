@@ -3,6 +3,9 @@
 {% block content %}
   <div class="p-card">
     <h4 class="p-muted-heading">{{ todo.name }}</h4>
+    {% if todo.project %}
+      <a href="{% url 'project_detail' todo.project.pk %}">{{ todo.project.name }}</a>
+    {% endif %}
     <div>
       {% for tag in todo.tags.all %}
         <span class="p-chip--information">{{ tag.name }}</span>

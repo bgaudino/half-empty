@@ -10,6 +10,7 @@ from quotes.views import QuoteMixin
 
 class TodoListView(LoginRequiredMixin, QuoteMixin, ListView):
     context_object_name = 'todos'
+    paginate_by = 10
 
     def get_queryset(self):
         form = forms.FilterTodosForm(self.request.GET)

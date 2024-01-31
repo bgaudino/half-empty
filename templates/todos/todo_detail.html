@@ -1,8 +1,19 @@
 {% extends 'base.html' %}
 
+{% block javascript %}
+  {% include 'core/js/htmx.html' %}
+{% endblock %}
+
 {% block content %}
+  {% csrf_token %}
   <div class="p-card">
-    <h4 class="p-muted-heading">{{ todo.name }}</h4>
+    <div class="u-clearfix">
+      <h3 class="u-float-left">
+        <label class="p-checkbox--heading" id="todo-{{ todo.pk }}">
+         {% include 'todos/partials/_todo.html' %} 
+      </h3>
+      <a class="p-button u-float-right" href="{% url 'todo_update' todo.pk %}">Edit</a>
+    </div>
     {% if todo.project %}
       <a href="{% url 'project_detail' todo.project.pk %}">{{ todo.project.name }}</a>
     {% endif %}
@@ -26,6 +37,5 @@
       <span><strong>Description:</strong></span>
       <p>{{ todo.description }}</p>
     {% endif %}
-    <a class="p-button" href="{% url 'todo_update' todo.pk %}">Edit</a>
   </div>
 {% endblock %}

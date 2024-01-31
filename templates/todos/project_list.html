@@ -7,8 +7,10 @@
 {% block content %}
   {% include 'quotes/partials/_quote.html' %}
   <div class="p-card">
-    <h3>My Projects</h3>
-    <a class="p-button--brand" href="{% url 'project_create' %}">New Project</a>
+    <div class="u-clearfix">
+      <h3 class="u-float-left">My Projects</h3>
+      <a class="p-button--brand u-float-right" href="{% url 'project_create' %}">New Project</a>
+    </div>
     <ul class="p-list--divided">
       {% for project in projects %}
         <a href="{% url 'project_detail' project.pk %}">

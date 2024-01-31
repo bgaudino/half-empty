@@ -9,14 +9,10 @@
 {% block content %}
   {% include 'quotes/partials/_quote.html' %}
   <div class="p-card">
-    <h4 class="p-muted-heading">{{ project.name }}</h4>
-    <a class="p-button" href="{% url 'project_update' project.pk %}">Edit</a>
+    <h3 class="u-float-left">{{ project.name }}</h3>
+    <a class="p-button u-float-right" href="{% url 'project_update' project.pk %}">Edit</a>
     {% include 'todos/partials/_add_todo_form.html' %}
-    <ul id="todos" class="p-list-divided">
-      {% csrf_token %}
-      {% for todo in todos %}
-        {% include 'todos/partials/_todo.html' %}
-      {% endfor %}
-    </ul>
+    {% csrf_token %}
+    {% include 'todos/partials/_todo_list.html' with disable_pagination=True %}
   </div>
 {% endblock %}

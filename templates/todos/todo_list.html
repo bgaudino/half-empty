@@ -10,22 +10,24 @@
   {% include 'quotes/partials/_quote.html' %}
   <div class="p-card">
     {% include 'todos/partials/_add_todo_form.html' %}
-    <h3>My Todos</h3>
-    <button
-      class="p-button--link has-icon"
+    <div class="u-clearfix">
+      <h3 class="u-float-left">My Todos</h3>
+      <button
+      class="p-button--link has-icon u-float-right"
       type="button"
       data-toggle="#filtersForm"
       data-show-text="Show filters"
       data-hide-text="Hide filters"
-    >
+      >
       <span>Show filters</span>
       <i class="p-icon--chevron-down"></i>
     </button>
+    </div>
     <form
       id="filtersForm"
       hx-get="{% url 'todo_list' %}"
       hx-swap="outerHTML"
-      hx-target="#todos"
+      hx-target="#todoList"
       hx-push-url="true"
       class="u-hide"
     >
@@ -65,11 +67,7 @@
     {% include 'todos/partials/_todo_list.html' %}
   </div>
     <script>
-      document.addEventListener('htmx:afterRequest', function({detail}) {
-        if (detail.requestConfig.elt.id == 'todoCreateForm' && detail.successful) {
-          detail.requestConfig.elt.reset();
-        } 
-      });
+
       document.getElementById('clearFiltersButton').onclick = function() {
         const form = document.getElementById('filtersForm');
         for (const element of form.querySelectorAll('input:not(hidden)')) {

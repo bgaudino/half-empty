@@ -89,7 +89,7 @@ class TodoUpdateView(LoginRequiredMixin, UpdateView):
 
 class TodoCreateView(LoginRequiredMixin, View):
     form_class = forms.TodoForm
-    template_name = 'todos/partials/_todo.html'
+    template_name = 'todos/partials/_todo_li.html'
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, user=self.request.user)

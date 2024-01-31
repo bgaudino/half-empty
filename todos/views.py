@@ -16,7 +16,7 @@ class TodoListView(LoginRequiredMixin, QuoteMixin, ListView):
         form = forms.FilterTodosForm(self.request.GET)
         form.full_clean()
         self.filters = form.cleaned_data
-        qs = self.request.user.todo_set
+        qs = self.request.user.todo_set.order_by('created_at', 'name')
         if self.filters.get('in_trash'):
             qs = qs.trashed()
         else:
@@ -157,7 +157,7 @@ class ProjectListView(LoginRequiredMixin, QuoteMixin, ListView):
         return self.request.user.project_set.all()
 
 
-class ProjectDetailView(LoginRequiredMixin, DetailView):
+class ProjectDetailView(LoginRequiredMixin, QuoteMixin, DetailView):
     context_object_name = 'project'
 
     def get_queryset(self):
@@ -167,4 +167,5 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         form = forms.TodoForm(user=self.request.user, project=self.object)
         context['add_todo_form'] = form
+        context['todos'] = self.object.todo_set.active().order_by('created_at', 'name')
         return context

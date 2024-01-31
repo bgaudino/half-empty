@@ -1,6 +1,9 @@
 from django import forms
+from django.contrib.auth import get_user_model
 
 from . import models
+
+User = get_user_model()
 
 
 class TodoForm(forms.ModelForm):
@@ -50,3 +53,21 @@ class FilterTodosForm(forms.Form):
     deadline_end = forms.DateField(required=False, widget=forms.DateInput({'type': 'date'}))
     completed = forms.BooleanField(required=False)
     in_trash = forms.BooleanField(required=False)
+
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = models.Project
+        fields = ('user', 'name', 'description', 'deadline')
+        widgets = {
+            'deadline': forms.DateTimeInput({'type': 'datetime-local'}),
+            'user': forms.HiddenInput(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        self.fields['user'].initial = user
+        qs = User.objects
+        qs = qs.filter(pk=user.pk) if user else qs.none()

@@ -45,6 +45,9 @@ class Project(TimeStampedModel, AbstractTaskModel):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('project_detail', kwargs={'pk': self.pk})
+
     def has_todos_remaining(self):
         return self.todo_set.active().todo().count() > 0
 

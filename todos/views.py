@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
-from django.views.generic import DetailView, ListView, UpdateView, View
+from django.views.generic import CreateView, DetailView, ListView, UpdateView, View
 
 from . import models
 from . import forms
@@ -169,3 +169,13 @@ class ProjectDetailView(LoginRequiredMixin, QuoteMixin, DetailView):
         context['add_todo_form'] = form
         context['todos'] = self.object.todo_set.active().order_by('created_at', 'name')
         return context
+
+
+class ProjectCreateView(LoginRequiredMixin, CreateView):
+    form_class = forms.ProjectForm
+    template_name = 'todos/project_form.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs

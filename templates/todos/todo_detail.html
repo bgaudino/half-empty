@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+  {% include 'quotes/partials/_quote.html' %}
   {% csrf_token %}
   <div class="p-card">
     <div class="u-clearfix">

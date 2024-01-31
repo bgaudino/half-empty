@@ -115,7 +115,7 @@ class TodoTrashView(LoginRequiredMixin, View):
         return HttpResponse()
 
 
-class TodoDetailView(LoginRequiredMixin, DetailView):
+class TodoDetailView(LoginRequiredMixin, QuoteMixin, DetailView):
     model = models.Todo
     context_object_name = 'todo'
 

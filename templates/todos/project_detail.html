@@ -7,12 +7,13 @@
 {% endblock %}
   
 {% block content %}
+  {% include 'quotes/partials/_quote.html' %}
   <div class="p-card">
     <h4 class="p-muted-heading">{{ project.name }}</h4>
     {% include 'todos/partials/_add_todo_form.html' %}
     <ul id="todos" class="p-list-divided">
       {% csrf_token %}
-      {% for todo in project.todo_set.all %}
+      {% for todo in todos %}
         {% include 'todos/partials/_todo.html' %}
       {% endfor %}
     </ul>

@@ -36,8 +36,13 @@ class AbstractTaskModel(models.Model):
         self.save()
 
 
+class ProjectQuerySet(models.QuerySet):
+    def with_todo_count(self):
+        return self.annotate(todo_count=models.Count('todo', filter=models.Q(todo__is_trashed=False, todo__completed_at__isnull=True)))
+
+
 class Project(TimeStampedModel, AbstractTaskModel):
-    pass
+    objects = ProjectQuerySet.as_manager()
 
     class Meta:
         unique_together = ('user', 'name')

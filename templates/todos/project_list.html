@@ -13,9 +13,23 @@
     </div>
     <ul class="p-list--divided">
       {% for project in projects %}
-        <a href="{% url 'project_detail' project.pk %}">
-          <li class="p-list__item">{{ project.name }}</li>
-        </a>
+        <li class="p-list__item">
+          <div class="p-media-object">
+            <div class="p-media-object__details">
+              <h3 class="p-media-object__title">
+                <a href="{% url 'project_detail' project.pk %}">{{ project.name }}</a>
+                <span class="p-badge p-badge" aria-label="{{ project.todo_count }} items todo">{{ project.todo_count }}</span>
+              </h3>
+              <ul class="p-media-object__meta-list">
+                {% if project.deadline %}
+                  <li class="p-media-object__meta-list-item--date">
+                    <span>Deadline: </span>{{ project.deadline }}
+                  </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </li>
       {% endfor %}
     </ul>
   </div>

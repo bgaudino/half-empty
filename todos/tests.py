@@ -52,3 +52,34 @@ class TodoListViewTest(TestCase):
             HTTP_HX_REQUEST='true'
         )
         self.assertTemplateUsed(response, 'todos/partials/_todo_list.html')
+
+
+class ProjectTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(email='testuser', password='testpassword')
+        self.project = models.Project.objects.create(
+            name='Test project',
+            user=self.user,
+        )
+        self.todos = [
+            models.Todo.objects.create(
+                user=self.user,
+                project=self.project, 
+                name=f'Todo {i}',
+            ) for i in range(3)
+        ]
+
+    def test_todo_count(self):
+        project = models.Project.objects.with_todo_count().get(pk=self.project.pk)
+        self.assertEqual(project.todo_count, 3)
+
+    def test_todo_count_excludes_completed_todos(self):
+        self.todos[0].toggle_completion()
+        project = models.Project.objects.with_todo_count().get(pk=self.project.pk)
+        self.assertEqual(project.todo_count, 2)
+
+    def test_todo_count_excludes_trashed_todos(self):
+        self.todos[0].is_trashed = True
+        self.todos[0].save()
+        project = models.Project.objects.with_todo_count().get(pk=self.project.pk)
+        self.assertEqual(project.todo_count, 2)

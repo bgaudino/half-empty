@@ -8,9 +8,24 @@
   
 {% block content %}
   {% include 'quotes/partials/_quote.html' %}
+  
   <div class="p-card">
-    <h3 class="u-float-left">{{ project.name }}</h3>
-    <a class="p-button u-float-right" href="{% url 'project_update' project.pk %}">Edit</a>
+    <div class="u-clearfix">
+      <h3 class="u-float-left">{{ project.name }}</h3>
+      <a class="p-button u-float-right" href="{% url 'project_update' project.pk %}">Edit</a>
+    </div>
+    <div class="p-media-object">
+      <div class="p-media-object__details">
+        <ul class="p-media-object__meta-list">
+          {% if project.deadline %}
+            <li class="p-media-object__meta-list-item--date">
+              <span>Deadline: </span>{{ project.deadline }}
+            </li>
+          {% endif %}
+        </ul>
+        <p class="p-media-object__content">{{ project.description }}</p>
+      </div>
+    </div>
     {% include 'todos/partials/_add_todo_form.html' %}
     {% csrf_token %}
     {% include 'todos/partials/_todo_list.html' with disable_pagination=True %}

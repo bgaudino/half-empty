@@ -155,7 +155,7 @@ class ProjectListView(LoginRequiredMixin, QuoteMixin, ListView):
     context_object_name = 'projects'
 
     def get_queryset(self):
-        return self.request.user.project_set.all()
+        return self.request.user.project_set.with_todo_count().all()
 
 
 class ProjectDetailView(LoginRequiredMixin, QuoteMixin, DetailView):

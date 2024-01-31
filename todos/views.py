@@ -1,7 +1,7 @@
-from typing import Any
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, View
 
 from . import models
@@ -155,7 +155,7 @@ class ProjectListView(LoginRequiredMixin, QuoteMixin, ListView):
     context_object_name = 'projects'
 
     def get_queryset(self):
-        return self.request.user.project_set.with_todo_count().all()
+        return self.request.user.project_set.active().with_todo_count().all()
 
 
 class ProjectDetailView(LoginRequiredMixin, QuoteMixin, DetailView):
@@ -195,3 +195,10 @@ class ProjectUpdateForm(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context['action'] = 'update'
         return context
+
+
+class ProjectTrashView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        project = get_object_or_404(models.Project, user=request.user, pk=pk)
+        project.trash()
+        return HttpResponse(headers={'HX-Redirect': reverse('project_list')})

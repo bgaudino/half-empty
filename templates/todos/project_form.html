@@ -1,8 +1,27 @@
 {% extends 'base.html' %}
 
+{% block javascript %}
+  {% include 'core/js/htmx.html' %}
+{% endblock %}
+
 {% block content %}
   <div class="p-card">
-    <h3>{{ action|title }} Project</h3>
+    {% if action == 'update' %}
+      <div class="u-clearfix">
+        <h3 class="u-float-left">{{ action|title }} Project</h3>
+        <button
+          type="button"
+          class="p-button--negative u-float-right"
+          hx-post="{% url 'project_trash' project.pk %}"
+          hx-include="[name='csrfmiddlewaretoken']"
+          hx-confirm="Are you sure you want to delete the project: {{ project.name }}?"
+        >
+          Delete
+        </button>
+      </div>
+    {% else %}
+      <h3 class="u-float-left">{{ action|title }} Project</h3>
+    {% endif %}
     <div class="p-card__content">
       <form method="POST">
         {% csrf_token %}

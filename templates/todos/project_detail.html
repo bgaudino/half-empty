@@ -12,7 +12,9 @@
   <div class="p-card">
     <div class="u-clearfix">
       <h3 class="u-float-left">{{ project.name }}</h3>
-      <a class="p-button u-float-right" href="{% url 'project_update' project.pk %}">Edit</a>
+      <div class="u-float-right">
+        <a class="p-button" href="{% url 'project_update' project.pk %}">Edit</a>
+      </div>
     </div>
     <div class="p-media-object">
       <div class="p-media-object__details">

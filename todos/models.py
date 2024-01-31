@@ -40,6 +40,9 @@ class ProjectQuerySet(models.QuerySet):
     def with_todo_count(self):
         return self.annotate(todo_count=models.Count('todo', filter=models.Q(todo__is_trashed=False, todo__completed_at__isnull=True)))
 
+    def active(self):
+        return self.filter(is_trashed=False)
+
 
 class Project(TimeStampedModel, AbstractTaskModel):
     objects = ProjectQuerySet.as_manager()
@@ -55,6 +58,11 @@ class Project(TimeStampedModel, AbstractTaskModel):
 
     def has_todos_remaining(self):
         return self.todo_set.active().todo().count() > 0
+
+    def trash(self):
+        self.is_trashed = True
+        self.save()
+        self.todo_set.update(is_trashed=True)
 
 
 class TodoQuerySet(models.QuerySet):

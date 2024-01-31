@@ -17,17 +17,36 @@ class Tag(models.Model):
         return self.name
 
 
-class Project(TimeStampedModel):
+class AbstractTaskModel(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     name = models.CharField(max_length=255)
     deadline = models.DateTimeField(null=True, blank=True)
     is_trashed = models.BooleanField(default=False)
+    description = models.TextField(blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.name
+
+    def toggle_completion(self):
+        self.completed_at = None if self.is_completed else timezone.now()
+        self.save()
+
+
+class Project(TimeStampedModel, AbstractTaskModel):
+    pass
 
     class Meta:
         unique_together = ('user', 'name')
 
     def __str__(self):
         return self.name
+
+    def has_todos_remaining(self):
+        return self.todo_set.active().todo().count() > 0
 
 
 class TodoQuerySet(models.QuerySet):
@@ -53,13 +72,7 @@ class TodoQuerySet(models.QuerySet):
         return self.filter(deadline__lt=timezone.now())
 
 
-class Todo(TimeStampedModel):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    completed_at = models.DateTimeField(null=True, blank=True)
-    is_trashed = models.BooleanField(default=False)
-    deadline = models.DateTimeField(null=True, blank=True)
+class Todo(TimeStampedModel, AbstractTaskModel):
     project = models.ForeignKey(Project, null=True, blank=True, on_delete=models.PROTECT)
     tags = models.ManyToManyField(Tag, blank=True)
 
@@ -71,10 +84,15 @@ class Todo(TimeStampedModel):
     def get_absolute_url(self):
         return reverse('todo_detail', kwargs={'pk': self.pk})
 
-    def toggle_completion(self):
-        self.completed_at = None if self.is_completed else timezone.now()
-        self.save()
-
     @property
     def is_completed(self):
         return self.completed_at is not None
+
+    def convert_to_project(self):
+        project = Project.objects.create(
+            user=self.user,
+            name=self.name,
+            deadline=self.deadline,
+        )
+        self.delete()
+        return project

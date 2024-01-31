@@ -1,3 +1,4 @@
+from typing import Any
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
@@ -172,10 +173,25 @@ class ProjectDetailView(LoginRequiredMixin, QuoteMixin, DetailView):
 
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
+    model = models.Project
     form_class = forms.ProjectForm
-    template_name = 'todos/project_form.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['action'] = 'create'
+        return context
+
+
+class ProjectUpdateForm(LoginRequiredMixin, UpdateView):
+    model = models.Project
+    fields = ('name', 'description', 'deadline')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['action'] = 'update'
+        return context

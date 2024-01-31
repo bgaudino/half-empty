@@ -10,6 +10,7 @@
   {% include 'quotes/partials/_quote.html' %}
   <div class="p-card">
     <h4 class="p-muted-heading">{{ project.name }}</h4>
+    <a class="p-button" href="{% url 'project_update' project.pk %}">Edit</a>
     {% include 'todos/partials/_add_todo_form.html' %}
     <ul id="todos" class="p-list-divided">
       {% csrf_token %}

@@ -2,11 +2,16 @@
 
 {% block content %}
   <div class="p-card">
+    <h3>{{ action|title }} Project</h3>
     <div class="p-card__content">
       <form method="POST">
         {% csrf_token %}
         {{ form }}
-        <a class="p-button" href="{% url 'project_list' %}">Cancel</a>
+        {% if action == 'create' %}
+          <a class="p-button" href="{% url 'project_list' %}">Cancel</a>
+        {% else %}
+          <a class="p-button" href="{% url 'project_detail' form.instance.pk %}">Cancel</a>
+        {% endif %}
         <button type="submit" class="p-button--brand">Save</button>
       </form>
     </div>

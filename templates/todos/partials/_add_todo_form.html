@@ -1,0 +1,46 @@
+<form
+  id="todoCreateForm"
+  hx-post="{% url 'todo_create' %}" 
+  hx-include="[name='tags']"
+  hx-target="#todos"
+  hx-swap="beforeend show:#todos:bottom"
+>
+  {% csrf_token %}
+  {{ add_todo_form.name }}
+<button
+  id="#toggleFieldsButton"
+  class="p-button--link has-icon"
+  type="button"
+  data-toggle=".addTodoFields"
+  data-show-text="More fields"
+  data-hide-text="Less fields"
+>
+  <span>More fields</span>
+  <i class="p-icon--chevron-down"></i>
+</button>
+<div class="u-hide addTodoFields">
+  {% if add_todo_form.project in add_todo_form.visible_fields %}
+    {{ add_todo_form.project.label_tag }}
+  {% endif %}
+  {{ add_todo_form.project }}
+  <datalist id="tags">
+    {% for tag in tags %}
+      <option value="{{ tag.name }}"></option>
+    {% endfor %} 
+  </datalist>
+  {{ add_todo_form.deadline.label_tag }}
+  {{ add_todo_form.deadline }}
+  {{ add_todo_form.description.label_tag }}
+  {{ add_todo_form.description }}
+</div>
+</form>
+<form 
+  id="tagForm"
+  class="u-hide addTodoFields"
+  hx-post="{% url 'add_tag' %}"
+  hx-target="this"
+  hx-swap="innerHTML"
+>
+  {% include 'todos/partials/_tag_form.html' %}
+</form>
+<button class="u-hide addTodoFields p-button--brand" type="submit" form="todoCreateForm">Add</button>

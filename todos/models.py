@@ -17,6 +17,23 @@ class Tag(models.Model):
         return self.name
 
 
+class TaskQuerySet(models.QuerySet):
+    def active(self):
+        return self.filter(is_trashed=False)
+
+    def todo(self):
+        return self.active().filter(completed_at__isnull=True)
+
+    def trashed(self):
+        return self.filter(is_trashed=True)
+
+    def completed(self):
+        return self.filter(completed_at__isnull=False)
+
+    def overdue(self):
+        return self.filter(deadline__lt=timezone.now())
+
+
 class AbstractTaskModel(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     name = models.CharField(max_length=255)
@@ -24,6 +41,8 @@ class AbstractTaskModel(models.Model):
     is_trashed = models.BooleanField(default=False)
     description = models.TextField(blank=True)
     completed_at = models.DateTimeField(null=True, blank=True)
+
+    objects = TaskQuerySet.as_manager()
 
     class Meta:
         abstract = True
@@ -39,16 +58,14 @@ class AbstractTaskModel(models.Model):
         self.completed_at = None if self.is_completed else timezone.now()
         self.save()
 
+    def trash(self):
+        self.is_trashed = True
+        self.save()
 
-class ProjectQuerySet(models.QuerySet):
+
+class ProjectQuerySet(TaskQuerySet):
     def with_todo_count(self):
         return self.annotate(todo_count=models.Count('todo', filter=models.Q(todo__is_trashed=False, todo__completed_at__isnull=True)))
-
-    def active(self):
-        return self.filter(is_trashed=False)
-
-    def todo(self):
-        return self.active().filter(completed_at__isnull=True)
 
 
 class Project(TimeStampedModel, AbstractTaskModel):
@@ -67,32 +84,16 @@ class Project(TimeStampedModel, AbstractTaskModel):
         return self.todo_set.active().todo().count() > 0
 
     def trash(self):
-        self.is_trashed = True
-        self.save()
+        super().trash()
         self.todo_set.update(is_trashed=True)
 
 
-class TodoQuerySet(models.QuerySet):
+class TodoQuerySet(TaskQuerySet):
     def with_project(self):
         return self.select_related('project')
 
     def with_tags(self):
         return self.prefetch_related('tags')
-
-    def active(self):
-        return self.filter(is_trashed=False)
-
-    def trashed(self):
-        return self.filter(is_trashed=True)
-
-    def todo(self):
-        return self.active().filter(completed_at__isnull=True)
-
-    def completed(self):
-        return self.filter(completed_at__isnull=False)
-
-    def overdue(self):
-        return self.filter(deadline__lt=timezone.now())
 
 
 class Todo(TimeStampedModel, AbstractTaskModel):

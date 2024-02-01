@@ -22,8 +22,14 @@ django-debug-toolbar==4.2.0
     # via -r requirements-dev.in
 flake8==7.0.0
     # via -r requirements-dev.in
+gunicorn==21.2.0
+    # via -r requirements.txt
 mccabe==0.7.0
     # via flake8
+packaging==23.2
+    # via
+    #   -r requirements.txt
+    #   gunicorn
 psycopg2==2.9.9
     # via -r requirements.txt
 pycodestyle==2.11.1
@@ -41,3 +47,5 @@ typing-extensions==4.9.0
     # via
     #   -r requirements.txt
     #   dj-database-url
+whitenoise==6.6.0
+    # via -r requirements.txt

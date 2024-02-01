@@ -27,13 +27,12 @@
     {% endif %}
     {% if todo.deadline %}
       <div>
-        <i class="fa-regular fa-calendar"></i>
+        <i class="p-icon--date"></i>
         <span><strong>Deadline:</span></strong>
         <p>{{ todo.deadline }}</p>
       </div>
     {% endif %}
     {% if todo.description %}
-      <i class="fa-regular fa-note-sticky"></i>
       <span><strong>Description:</strong></span>
       <p>{{ todo.description }}</p>
     {% endif %}

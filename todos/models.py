@@ -47,6 +47,9 @@ class ProjectQuerySet(models.QuerySet):
     def active(self):
         return self.filter(is_trashed=False)
 
+    def todo(self):
+        return self.active().filter(completed_at__isnull=True)
+
 
 class Project(TimeStampedModel, AbstractTaskModel):
     objects = ProjectQuerySet.as_manager()
@@ -83,7 +86,7 @@ class TodoQuerySet(models.QuerySet):
         return self.filter(is_trashed=True)
 
     def todo(self):
-        return self.filter(completed_at__isnull=True)
+        return self.active().filter(completed_at__isnull=True)
 
     def completed(self):
         return self.filter(completed_at__isnull=False)

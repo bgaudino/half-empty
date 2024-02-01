@@ -212,6 +212,6 @@ class ProjectToggleCompletionView(LoginRequiredMixin, View):
         project = get_object_or_404(models.Project, user=request.user, pk=pk)
         project.toggle_completion()
         return render(
-            request, 'todos/partials/_completable.html', 
+            request, 'todos/partials/_completable.html',
             {'completable': project, 'class_name': request.GET.get('class_name')}
         )

@@ -25,6 +25,11 @@
               <span>Deadline: </span>{{ project.deadline }}
             </li>
           {% endif %}
+          {% if project.is_completed %}
+            <li>
+              <p><i class="p-icon--success"></i> Completed at {{ project.completed_at }}</p>
+            </li>
+          {% endif %}
         </ul>
         <p class="p-media-object__content">{{ project.description }}</p>
       </div>

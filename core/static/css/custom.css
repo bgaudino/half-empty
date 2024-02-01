@@ -15,3 +15,7 @@
 .mb-1 {
     margin-bottom: 1rem;
 }
+
+.p-card:has(> .p-search-and-filter) {
+    overflow: visible;
+}

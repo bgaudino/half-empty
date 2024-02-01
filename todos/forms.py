@@ -59,6 +59,21 @@ class FilterTodosForm(forms.Form):
         ('in_trash', 'In Trash'),
         ('overdue', 'Overdue'),
     ))
+    project = forms.ModelChoiceField(
+        models.Project.objects.none(),
+        widget=forms.HiddenInput(),
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        self.project = kwargs.pop('project', None)
+        super().__init__(*args, **kwargs)
+
+        if self.project:
+            self.fields['project'].queryset = models.Project.objects.filter(pk=self.project.pk)
+            self.fields['project'].initial = self.project
+        elif self.user:
+            self.fields['project'].queryset = self.user.project_set.all()
 
 
 class ProjectForm(forms.ModelForm):

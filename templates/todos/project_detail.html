@@ -36,6 +36,7 @@
     </div>
     {% include 'todos/partials/_add_todo_form.html' %}
     {% csrf_token %}
+    {% include 'todos/partials/_todo_filter_form.html' %}
     {% include 'todos/partials/_todo_list.html' with disable_pagination=True %}
   </div>
 {% endblock %}

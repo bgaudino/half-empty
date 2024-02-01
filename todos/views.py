@@ -14,7 +14,7 @@ class TodoListView(LoginRequiredMixin, QuoteMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        form = forms.FilterTodosForm(self.request.GET)
+        form = forms.FilterTodosForm(self.request.GET, user=self.request.user)
         form.full_clean()
         self.filters = form.cleaned_data
         qs = self.request.user.todo_set.order_by('created_at', 'name')
@@ -33,6 +33,8 @@ class TodoListView(LoginRequiredMixin, QuoteMixin, ListView):
                 qs = qs.overdue()
             case _:
                 qs = qs.active()
+        if project := self.filters.get('project'):
+            qs = qs.filter(project=project)
         if deadline_start := self.filters.get('deadline_start'):
             qs = qs.filter(deadline__gte=deadline_start)
         if deadline_end := self.filters.get('deadline_end'):
@@ -50,7 +52,7 @@ class TodoListView(LoginRequiredMixin, QuoteMixin, ListView):
         chips = []
         if search := self.filters.get('search'):
             chips.append(('Search', search))
-        if tag := self.filters.get('search'):
+        if tag := self.filters.get('tag'):
             chips.append(('Tag', tag))
         if status := self.filters.get('status'):
             chips.append(('Status', status.replace('_', ' ').title()))
@@ -178,6 +180,10 @@ class ProjectDetailView(LoginRequiredMixin, QuoteMixin, DetailView):
         context = super().get_context_data(**kwargs)
         form = forms.TodoForm(user=self.request.user, project=self.object)
         context['add_todo_form'] = form
+        context['filter_todos_form'] = forms.FilterTodosForm(
+            initial=self.request.GET,
+            project=self.object,
+        )
         context['todos'] = self.object.todo_set.active().order_by('created_at', 'name')
         return context
 

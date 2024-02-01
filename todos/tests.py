@@ -31,15 +31,25 @@ class TodoListViewTest(TestCase):
 
     def test_filter_completed(self):
         self.todos[0].toggle_completion()
-        response = self.client.get(f'{self.url}?completed=true')
+        response = self.client.get(f'{self.url}?status=completed')
         self.assertEqual(list(response.context['todos']), self.todos[:1])
 
     def test_filter_trashed(self):
         for i in range(1, 3):
-            self.todos[i].is_trashed = True
-            self.todos[i].save()
-        response = self.client.get(f'{self.url}?in_trash=true')
+            self.todos[i].trash()
+        response = self.client.get(f'{self.url}?status=in_trash')
         self.assertEqual(list(response.context['todos']), self.todos[1:])
+
+    def test_filter_todo(self):
+        self.todos[0].toggle_completion()
+        response = self.client.get(f'{self.url}?status=todo')
+        self.assertEqual(list(response.context['todos']), self.todos[1:])
+
+    def test_filter_overdue(self):
+        self.todos[0].deadline = timezone.now()
+        self.todos[0].save()
+        response = self.client.get(f'{self.url}?status=overdue')
+        self.assertEqual(list(response.context['todos']), self.todos[:1])
 
     def test_filter_by_tag(self):
         tag = models.Tag.objects.create(user=self.user, name='tag')

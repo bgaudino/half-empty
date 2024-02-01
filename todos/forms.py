@@ -48,11 +48,17 @@ class AddTagForm(forms.Form):
 
 
 class FilterTodosForm(forms.Form):
+    search = forms.CharField(max_length=255, required=False)
     tag = forms.CharField(max_length=255, required=False, widget=forms.TextInput({'list': 'tags'}))
     deadline_start = forms.DateField(required=False, widget=forms.DateInput({'type': 'date', 'class': 'p-form__control'}))
     deadline_end = forms.DateField(required=False, widget=forms.DateInput({'type': 'date'}))
-    completed = forms.BooleanField(required=False)
-    in_trash = forms.BooleanField(required=False)
+    status = forms.ChoiceField(choices=(
+        ('active', 'Active'),
+        ('completed', 'Completed'),
+        ('todo', 'To do'),
+        ('in_trash', 'In Trash'),
+        ('overdue', 'Overdue'),
+    ))
 
 
 class ProjectForm(forms.ModelForm):

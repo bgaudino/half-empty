@@ -10,73 +10,85 @@
   {% include 'quotes/partials/_quote.html' %}
   <div class="p-card">
     {% include 'todos/partials/_add_todo_form.html' %}
-    <div class="u-clearfix">
-      <h3 class="u-float-left">My Todos</h3>
-      <button
-      class="p-button--link has-icon u-float-right"
-      type="button"
-      data-toggle="#filtersForm"
-      data-show-text="Show filters"
-      data-hide-text="Hide filters"
-      >
-      <span>Show filters</span>
-      <i class="p-icon--chevron-down"></i>
-    </button>
+    <h3>My Todos</h3>
+    <div id="searchAndFilter" class="p-search-and-filter mb-1">
+      <div class="p-search-and-filter__search-container" aria-expanded="false" data-active="true" data-empty="true">
+        <form
+          id="searchForm"
+          class="p-search-and-filter__box"
+          data-overflowing="false"
+          hx-get="{% url 'todo_list' %}" 
+          hx-target="#todoList"
+          hx-swap="outerHTML"
+          hx-include="#filtersForm"
+          hx-trigger="input delay:250ms"
+          hx-push-url="true"
+        >
+          <label class="u-off-screen" for="search">Search and filter</label>
+          <input
+            id="search"
+            autocomplete="off"
+            class="p-search-and-filter__input"
+            name="search" placeholder="Search and filter"
+            type="search"
+            value="{{ request.GET.search }}"
+          > 
+        </form>
+      </div>
+      <div id="filter" class="p-search-and-filter__panel" aria-hidden="true">
+        <div class="p-filter-panel-section">
+          <form
+            id="filtersForm"
+            hx-get="{% url 'todo_list' %}"
+            hx-target="#todoList"
+            hx-swap="outerHTML"
+            hx-trigger="change"
+            hx-include="#searchForm"
+            hx-push-url="true"
+          >
+            {{ filter_todos_form.tag.label_tag }}
+            {{ filter_todos_form.tag }}
+            {{ filter_todos_form.status.label_tag }} 
+            {{ filter_todos_form.status }} 
+            {{ filter_todos_form.deadline_start.label_tag }}
+            {{ filter_todos_form.deadline_start }}
+            {{ filter_todos_form.deadline_end.label_tag }}
+            {{ filter_todos_form.deadline_end }}
+          </form>
+        </div>
+      </div>
     </div>
-    <form
-      id="filtersForm"
-      hx-get="{% url 'todo_list' %}"
-      hx-swap="outerHTML"
-      hx-target="#todoList"
-      hx-push-url="true"
-      class="u-hide"
-    >
-      {{ filter_todos_form.tag.label_tag }}
-      {{ filter_todos_form.tag }}
-      {{ filter_todos_form.deadline_start.label_tag }}
-      {{ filter_todos_form.deadline_start }}
-      {{ filter_todos_form.deadline_end.label_tag }}
-      {{ filter_todos_form.deadline_end }}
-      <label class="p-checkbox">
-        <input
-          type="checkbox"
-          name="completed"
-          aria-labelledby="completedLabel"
-          class="p-checkbox__input"
-          {% if request.GET.completed == 'on' %}
-            checked
-          {% endif %}
-        >
-        <span class="p-checkbox__label" id="completedLabel">{{ filter_todos_form.completed.label }}</span>
-      </label>
-      <label class="p-checkbox">
-        <input
-          type="checkbox"
-          name="in_trash"
-          aria-labelledby="inTrashLabel"
-          class="p-checkbox__input"
-          {% if request.GET.in_trash == 'on' %}
-            checked
-          {% endif %}
-        >
-        <span class="p-checkbox__label" id="inTrashLabel">{{ filter_todos_form.in_trash.label }}</span>
-      </label>
-      <button type="button" id="clearFiltersButton">Clear Filters</button>
-      <button type="submit">Apply Filters</button>
-    </form>
     {% include 'todos/partials/_todo_list.html' %}
-  </div>
     <script>
-      document.getElementById('clearFiltersButton').onclick = function() {
-        const form = document.getElementById('filtersForm');
-        for (const element of form.querySelectorAll('input:not(hidden)')) {
-          if (element.type === 'checkbox') {
-            element.checked = false;
-          } else {
-            element.value = '';
-          }
-        }
-        form.querySelector('button[type="submit"]').click();
+      const search = document.getElementById('search');
+      const filter = document.getElementById('filter');
+      function hideFilters() {
+        search.parentElement.parentElement.dataset.active = 'false';
+        filter.ariaHidden = true;
       }
-  </script>
+      function isActive() {
+        return document.querySelector('.p-search-and-filter__search-container').dataset.active === 'true';
+      }
+      function showFilters() {
+        search.parentElement.parentElement.dataset.active = 'true';
+        filter.ariaHidden = 'false';
+      }
+      function toggleFilters() {
+        isActive() ? hideFilters() : showFilters();
+      }
+      search.onfocus = showFilters;
+      document.getElementById('searchAndFilter').onclick = function(e) {
+        e.stopPropagation();
+      }
+      window.onclick = hideFilters;
+      document.getElementById('searchForm').onsubmit = function(e) {
+        e.preventDefault();
+        toggleFilters();
+      }
+      document.getElementById('filtersForm').onsubmit = function(e) {
+        e.preventDefault();
+        hideFilters();
+      }
+    </script>
+  </div>
 {% endblock %}

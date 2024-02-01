@@ -18,14 +18,21 @@ class TodoListView(LoginRequiredMixin, QuoteMixin, ListView):
         form.full_clean()
         self.filters = form.cleaned_data
         qs = self.request.user.todo_set.order_by('created_at', 'name')
-        if self.filters.get('in_trash'):
-            qs = qs.trashed()
-        else:
-            qs = qs.active()
+        if search := self.filters.get('search'):
+            qs = qs.filter(name__icontains=search)
         if tag := self.filters.get('tag'):
             qs = qs.filter(tags__name=tag)
-        if self.filters.get('completed'):
-            qs = qs.completed()
+        match self.filters.get('status'):
+            case 'completed':
+                qs = qs.completed()
+            case 'in_trash':
+                qs = qs.trashed()
+            case 'todo':
+                qs = qs.todo()
+            case 'overdue':
+                qs = qs.overdue()
+            case _:
+                qs = qs.active()
         if deadline_start := self.filters.get('deadline_start'):
             qs = qs.filter(deadline__gte=deadline_start)
         if deadline_end := self.filters.get('deadline_end'):
@@ -41,12 +48,12 @@ class TodoListView(LoginRequiredMixin, QuoteMixin, ListView):
             context['tags'] = tags
             context['filter_todos_form'] = forms.FilterTodosForm(initial=self.request.GET)
         chips = []
-        if tag := self.filters.get('tag'):
+        if search := self.filters.get('search'):
+            chips.append(('Search', search))
+        if tag := self.filters.get('search'):
             chips.append(('Tag', tag))
-        if self.filters.get('completed'):
-            chips.append((None, 'Completed'))
-        if self.filters.get('in_trash'):
-            chips.append((None, 'In Trash'))
+        if status := self.filters.get('status'):
+            chips.append(('Status', status.replace('_', ' ').title()))
         start = self.filters.get('deadline_start')
         end = self.filters.get('deadline_end')
         if start and end:

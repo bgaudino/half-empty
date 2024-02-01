@@ -68,7 +68,7 @@ class TodoUpdateView(LoginRequiredMixin, UpdateView):
     form_class = forms.TodoForm
 
     def get_queryset(self):
-        return self.request.user.todo_set.with_tags().all()
+        return self.request.user.todo_set.with_tags().order_by('created_at', 'name')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -6,10 +6,9 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView, V
 
 from . import models
 from . import forms
-from quotes.views import QuoteMixin
 
 
-class TodoListView(LoginRequiredMixin, QuoteMixin, ListView):
+class TodoListView(LoginRequiredMixin, ListView):
     context_object_name = 'todos'
     paginate_by = 10
 
@@ -127,7 +126,7 @@ class TodoTrashView(LoginRequiredMixin, View):
         return HttpResponse()
 
 
-class TodoDetailView(LoginRequiredMixin, QuoteMixin, DetailView):
+class TodoDetailView(LoginRequiredMixin, DetailView):
     model = models.Todo
     context_object_name = 'todo'
 
@@ -163,14 +162,14 @@ class TagRemoveView(LoginRequiredMixin, View):
         })
 
 
-class ProjectListView(LoginRequiredMixin, QuoteMixin, ListView):
+class ProjectListView(LoginRequiredMixin, ListView):
     context_object_name = 'projects'
 
     def get_queryset(self):
         return self.request.user.project_set.active().with_todo_count().all()
 
 
-class ProjectDetailView(LoginRequiredMixin, QuoteMixin, DetailView):
+class ProjectDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'project'
 
     def get_queryset(self):

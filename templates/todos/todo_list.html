@@ -67,7 +67,6 @@
     {% include 'todos/partials/_todo_list.html' %}
   </div>
     <script>
-
       document.getElementById('clearFiltersButton').onclick = function() {
         const form = document.getElementById('filtersForm');
         for (const element of form.querySelectorAll('input:not(hidden)')) {

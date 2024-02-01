@@ -3,9 +3,7 @@
   hx-include="[name='csrfmiddlewaretoken']"
   id="todoLi-{{ todo.pk }}"
 >
-  <label class="p-checkbox" id="todo-{{ todo.pk }}">
-    {% include 'todos/partials/_todo.html' with todo=todo %}
-  </label>
+  {% include 'todos/partials/_completable.html' with completable=todo class_name='p-checkbox' %}
   <div>
     <a class="p-button" href="{% url 'todo_detail' todo.pk %}" aria-label="Todo detail">
       <i class="fa-solid fa-circle-info"></i>

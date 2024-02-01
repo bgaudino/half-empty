@@ -1,5 +1,5 @@
 <div id="todoList">
-  <ul id="todos" class="p-list--divided p-card__content">
+  <ul id="todos" class="p-list--divided">
     {% for lead, value in chips %}
     <span class="p-chip--information">
       {% if lead %}
@@ -9,7 +9,7 @@
     </span>
     {% endfor %}
     {% for todo in todos %}
-    {% include 'todos/partials/_todo_li.html' with todo=todo %}
+      {% include 'todos/partials/_todo_li.html' with todo=todo link=True %}
     {% endfor %}
   </ul>
   {% if not disable_pagination %}

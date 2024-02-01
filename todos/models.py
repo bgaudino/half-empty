@@ -31,6 +31,10 @@ class AbstractTaskModel(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def is_completed(self):
+        return self.completed_at is not None
+
     def toggle_completion(self):
         self.completed_at = None if self.is_completed else timezone.now()
         self.save()
@@ -99,10 +103,6 @@ class Todo(TimeStampedModel, AbstractTaskModel):
 
     def get_absolute_url(self):
         return reverse('todo_detail', kwargs={'pk': self.pk})
-
-    @property
-    def is_completed(self):
-        return self.completed_at is not None
 
     def convert_to_project(self):
         project = Project.objects.create(

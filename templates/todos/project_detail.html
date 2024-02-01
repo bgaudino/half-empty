@@ -8,10 +8,11 @@
   
 {% block content %}
   {% include 'quotes/partials/_quote.html' %}
-  
   <div class="p-card">
     <div class="u-clearfix">
-      <h3 class="u-float-left">{{ project.name }}</h3>
+      <h3 class="u-float-left">
+        {% include 'todos/partials/_completable.html' with completable=project class_name='p-checkbox--heading' %}
+      </h3>
       <div class="u-float-right">
         <a class="p-button" href="{% url 'project_update' project.pk %}">Edit</a>
       </div>

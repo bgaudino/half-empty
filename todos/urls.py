@@ -8,7 +8,7 @@ urlpatterns = [
     path('todos/<int:pk>/', views.TodoDetailView.as_view(), name='todo_detail'),
     path('todos/<int:pk>/update/', views.TodoUpdateView.as_view(), name='todo_update'),
     path('todos/create/', views.TodoCreateView.as_view(), name='todo_create'),
-    path('toggle_completion/<int:pk>/', views.TodoToggleCompletionView.as_view(), name='todo_toggle_completion'),
+    path('todos/<int:pk>/toggle_completion/', views.TodoToggleCompletionView.as_view(), name='todo_toggle_completion'),
     path('todos/trash/<int:pk>/', views.TodoTrashView.as_view(), name='todo_trash'),
     path('todos/add_tag/', views.TagAddView.as_view(), name='add_tag'),
     path('todos/remove_tag/<int:pk>/', views.TagRemoveView.as_view(), name='remove_tag'),
@@ -17,4 +17,5 @@ urlpatterns = [
     path('projects/<int:pk>/', views.ProjectDetailView.as_view(), name='project_detail'),
     path('projects/<int:pk>/update/', views.ProjectUpdateForm.as_view(), name='project_update'),
     path('projects/<int:pk>/trash/', views.ProjectTrashView.as_view(), name='project_trash'),
+    path('projects/<int:pk>/toggle_completion/', views.ProjectToggleCompletionView.as_view(), name='project_toggle_completion'),
 ]

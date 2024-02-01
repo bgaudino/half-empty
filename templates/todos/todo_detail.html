@@ -10,8 +10,7 @@
   <div class="p-card">
     <div class="u-clearfix">
       <h3 class="u-float-left">
-        <label class="p-checkbox--heading" id="todo-{{ todo.pk }}">
-         {% include 'todos/partials/_todo.html' %} 
+        {% include 'todos/partials/_completable.html' with completable=todo class_name='p-checkbox--heading' %} 
       </h3>
       <a class="p-button u-float-right" href="{% url 'todo_update' todo.pk %}">Edit</a>
     </div>

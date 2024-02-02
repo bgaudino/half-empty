@@ -147,3 +147,5 @@ SITE_URL = 'http://localhost:8000'
 
 RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY')
 RECAPTCHA_SITE_KEY = os.environ.get('RECAPTCHA_SITE_KEY')
+
+CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL')

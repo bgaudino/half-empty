@@ -53,8 +53,8 @@ class ContactForm(forms.ModelForm):
             send_mail(
                 'Contact form submitted',
                 'New contact form submission.',
-                None,
-                ('bgaudino@gmail.com',),
+                settings.CONTACT_EMAIL,
+                (settings.CONTACT_EMAIL,),
                 html_message=f'''View it <a href="{settings.SITE_URL}{instance.get_absolute_url()}">here</a>'''
             )
         return instance

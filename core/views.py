@@ -32,3 +32,8 @@ class ContactFormView(CreateView):
         if errors := form.errors.get('g-recaptcha-response'):
             messages.add_message(self.request, messages.ERROR, 'reCaptcha: {}'.format('\n'.join(errors)))
         return super().form_invalid(form)
+
+    def form_valid(self, form):
+        res = super().form_valid(form)
+        messages.add_message(self.request, messages.SUCCESS, 'Your message is sent. Someone will get back to you soon!')
+        return res

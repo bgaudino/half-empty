@@ -21,7 +21,7 @@ class TodoListView(LoginRequiredMixin, ListView):
         sort_form = forms.SortForm(self.request.GET)
         sort_form.full_clean()
         self.filters.update(sort_form.cleaned_data)
-        qs = self.request.user.todo_set
+        qs = self.request.user.todo_set.with_tags()
         if search := self.filters.get('search'):
             qs = qs.filter(name__icontains=search)
         if tag := self.filters.get('tag'):

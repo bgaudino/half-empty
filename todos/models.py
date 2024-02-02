@@ -93,7 +93,7 @@ class TodoQuerySet(TaskQuerySet):
         return self.select_related('project')
 
     def with_tags(self):
-        return self.prefetch_related('tags')
+        return self.prefetch_related('tags').annotate(tag_count=models.Count('tags'))
 
 
 class Todo(TimeStampedModel, AbstractTaskModel):

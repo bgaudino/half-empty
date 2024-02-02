@@ -1,0 +1,21 @@
+{% for error in form.non_field_errors %}
+  <div class="p-notification--negative">
+    <div class="p-notification__content">
+      <p class="p-notification__message">{{ error }}</p>
+    </div>
+  </div>
+{% endfor %}
+
+{% for field in form.hidden_fields %}
+  {{ field }}
+{% endfor %}
+
+{% for field in form.visible_fields %}
+  <div {% if field.errors %}class="p-form-validation is-error"{% endif %}>
+    {{ field.label_tag }}
+    {{ field }}
+    {% for error in field.errors %}
+      <p class="p-form-validation__message">{{ error }}</p>
+    {% endfor %}
+  </div>
+{% endfor %}

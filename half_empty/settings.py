@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'core',
     'todos',
     'quotes',
+
+    'django.forms',
 ]
 
 MIDDLEWARE = [
@@ -136,3 +138,5 @@ MESSAGE_TAGS = {
     messages.WARNING: 'warning',
     messages.ERROR: 'negative',
 }
+
+FORM_RENDERER = 'core.forms.VanillaFormRenderer'

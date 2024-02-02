@@ -128,7 +128,7 @@ class TodoCreateView(LoginRequiredMixin, View):
         if form.is_valid():
             todo = form.save()
         else:
-            raise HttpResponseBadRequest()
+            return HttpResponseBadRequest()
         return render(request, self.template_name, {'todo': todo})
 
 

@@ -140,3 +140,5 @@ MESSAGE_TAGS = {
 }
 
 FORM_RENDERER = 'core.forms.VanillaFormRenderer'
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

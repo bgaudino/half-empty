@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
@@ -16,7 +18,10 @@ class TodoListView(LoginRequiredMixin, ListView):
         form = forms.FilterTodosForm(self.request.GET, user=self.request.user)
         form.full_clean()
         self.filters = form.cleaned_data
-        qs = self.request.user.todo_set.order_by('created_at', 'name')
+        sort_form = forms.SortForm(self.request.GET)
+        sort_form.full_clean()
+        self.filters.update(sort_form.cleaned_data)
+        qs = self.request.user.todo_set
         if search := self.filters.get('search'):
             qs = qs.filter(name__icontains=search)
         if tag := self.filters.get('tag'):
@@ -38,6 +43,10 @@ class TodoListView(LoginRequiredMixin, ListView):
             qs = qs.filter(deadline__gte=deadline_start)
         if deadline_end := self.filters.get('deadline_end'):
             qs = qs.filter(deadline__lte=deadline_end)
+        if sort := self.filters.get('sort'):
+            qs = qs.order_by(sort)
+        else:
+            qs = qs.order_by('created_at', 'name')
         return qs
 
     def get_context_data(self, **kwargs):
@@ -48,6 +57,7 @@ class TodoListView(LoginRequiredMixin, ListView):
             tags = self.request.user.tag_set.all()
             context['tags'] = tags
             context['filter_todos_form'] = forms.FilterTodosForm(initial=self.request.GET)
+            context['sort_todos_form'] = forms.SortForm(initial=self.request.GET)
         chips = []
         if search := self.filters.get('search'):
             chips.append(('Search', search))
@@ -64,12 +74,26 @@ class TodoListView(LoginRequiredMixin, ListView):
         elif end:
             chips.append(('Deadline', f'{end} and earlier'))
         context['chips'] = chips
+
+        # TODO: make pagination work with other views that call this via htmx
+        # This is a hack to disable pagination in these cases for now
+        if self.request.is_htmx and (referer := self.request.META.get('HTTP_REFERER')):
+            _, _, path, *_ = urlparse(referer)
+            context['disable_pagination'] = path != reverse('todo_list')
         return context
 
     def get_template_names(self):
         if self.request.is_htmx:
             return ('todos/partials/_todo_list.html')
         return super().get_template_names()
+
+    def render_to_response(self, context, **response_kwargs):
+        headers = {}
+        if referer := self.request.META.get('HTTP_REFERER'):
+            _, _, path, *_ = urlparse(referer)
+            url = '?'.join((path, self.request.GET.urlencode()))
+            headers['Hx-Push-Url'] = url
+        return super().render_to_response(context, headers=headers, **response_kwargs)
 
 
 class TodoUpdateView(LoginRequiredMixin, UpdateView):
@@ -183,6 +207,7 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
             initial=self.request.GET,
             project=self.object,
         )
+        context['sort_todos_form'] = forms.SortForm(initial=self.request.GET)
         context['todos'] = self.object.todo_set.active().order_by('created_at', 'name')
         return context
 

@@ -7,7 +7,7 @@
       hx-get="{% url 'todo_list' %}" 
       hx-target="#todoList"
       hx-swap="outerHTML"
-      hx-include="#filtersForm"
+      hx-include="#filtersForm, #sortForm"
       hx-trigger="input delay:250ms"
       hx-push-url="true"
     >
@@ -30,7 +30,7 @@
         hx-target="#todoList"
         hx-swap="outerHTML"
         hx-trigger="change"
-        hx-include="#searchForm"
+        hx-include="#searchForm, #sortForm"
         hx-push-url="true"
       >
         {{ filter_todos_form.project }}

@@ -9,7 +9,26 @@
 {% block content %}
   <div class="p-card">
     {% include 'todos/partials/_add_todo_form.html' %}
-    <h3>My Todos</h3>
+    <div class="u-clearfix">
+      <h3 class="u-float-left">My Todos</h3>
+      <form
+        id="sortForm"
+        class="p-form p-form--inline u-float-right"
+        hx-get="{% url 'todo_list' %}"
+        hx-trigger="change"
+        hx-target="#todoList"
+        hx-swap="outerHTML"
+        hx-include="#searchForm, #filtersForm"
+        hx-push-url="true"
+      >
+        <div class="p-form__group">
+          <label for="username-inline" class="p-form__label">Order by:</label>
+          <div class="p-form__control">
+            {{ sort_todos_form.sort }}
+          </div>
+        </div>
+      </form>
+    </div>
     {% include 'todos/partials/_todo_filter_form.html' %}
     {% include 'todos/partials/_todo_list.html' %}
   </div>

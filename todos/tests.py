@@ -64,6 +64,44 @@ class TodoListViewTest(TestCase):
         )
         self.assertTemplateUsed(response, 'todos/partials/_todo_list.html')
 
+    def test_sort_by_oldest(self):
+        response = self.client.get(f'{self.url}?sort=created_at')
+        self.assertEqual(list(response.context['todos']), self.todos)
+
+    def test_sort_by_newest(self):
+        response = self.client.get(f'{self.url}?sort=-created_at')
+        self.assertEqual(list(response.context['todos']), list(reversed(self.todos)))
+
+    def test_sort_by_name(self):
+        self.todos[0].name = 'A'
+        self.todos[1].name = 'b'
+        self.todos[2].name = 'C'
+        models.Todo.objects.bulk_update(self.todos, ('name',))
+        response = self.client.get(f'{self.url}?sort=name')
+        self.assertEqual(list(response.context['todos']), self.todos)
+
+    def test_sort_by_name_descending(self):
+        self.todos[0].name = 'A'
+        self.todos[1].name = 'b'
+        self.todos[2].name = 'C'
+        models.Todo.objects.bulk_update(self.todos, ('name',))
+        response = self.client.get(f'{self.url}?sort=-name')
+        self.assertEqual(list(response.context['todos']), list(reversed(self.todos)))
+
+    def test_sort_by_soonest_deadline(self):
+        for todo in self.todos:
+            todo.deadline = timezone.now()
+            todo.save()
+        response = self.client.get(f'{self.url}?sort=deadline')
+        self.assertEqual(list(response.context['todos']), self.todos)
+
+    def test_sort_by_latest_deadline(self):
+        for todo in self.todos:
+            todo.deadline = timezone.now()
+            todo.save()
+        response = self.client.get(f'{self.url}?sort=-deadline')
+        self.assertEqual(list(response.context['todos']), list(reversed(self.todos)))
+
 
 class TodoTestCase(TestCase):
     def setUp(self):

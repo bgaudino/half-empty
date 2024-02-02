@@ -24,7 +24,7 @@
               hx-target="#todoList"
               hx-swap="outerHTML"
               hx-push-url="true"
-              hx-include="#filtersForm"
+              hx-include="#filtersForm, #searchForm, #sortForm"
             {% else %}
               class="p-pagination__link--previous is-disabled"
               disabled
@@ -42,7 +42,7 @@
               hx-target="#todoList"
               hx-swap="outerHTML"
               hx-push-url="true"
-              hx-include="#filtersForm"
+              hx-include="#filtersForm, #searchForm, #sortForm"
             {% else %}
               class="p-pagination__link--next is-disabled"
               disabled

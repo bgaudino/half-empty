@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.db.models.functions import Lower
 
 from . import models
 
@@ -74,6 +75,25 @@ class FilterTodosForm(forms.Form):
             self.fields['project'].initial = self.project
         elif self.user:
             self.fields['project'].queryset = self.user.project_set.all()
+
+
+class SortForm(forms.Form):
+    sort = forms.ChoiceField(choices=(
+        ('created_at', 'Oldest'),
+        ('-created_at', 'Newest'),
+        ('name', 'A to Z'),
+        ('-name', 'Z to A'),
+        ('deadline', 'Deadline (earliest)'),
+        ('-deadline', 'Deadline (latest)'),
+    ))
+
+    def clean_sort(self):
+        sort = self.cleaned_data.get('sort')
+        if sort == 'name':
+            return Lower(sort)
+        if sort == '-name':
+            return Lower('name').desc()
+        return sort
 
 
 class ProjectForm(forms.ModelForm):

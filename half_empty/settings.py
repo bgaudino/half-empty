@@ -142,3 +142,8 @@ MESSAGE_TAGS = {
 FORM_RENDERER = 'core.forms.VanillaFormRenderer'
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+SITE_URL = 'http://localhost:8000'
+
+RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY')
+RECAPTCHA_SITE_KEY = os.environ.get('RECAPTCHA_SITE_KEY')

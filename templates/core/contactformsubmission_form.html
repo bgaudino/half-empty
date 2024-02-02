@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block javascript %}
+  {% if not request.user.is_authenticated %}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <div class="p-card">
+    <h3>Contact Us</h3>
+    <div class="p-card__content">
+      <form method="POST">
+        {% csrf_token %}
+        {{ form }}
+        {% if not request.user.is_authenticated %}
+          <div class="g-recaptcha mb-1" data-sitekey="{{ recaptcha_site_key }}"></div>
+        {% endif %}
+        <button class="p-button--brand" type="submit">Send</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

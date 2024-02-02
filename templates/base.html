@@ -28,25 +28,37 @@
       <nav class="p-navigation__nav" aria-label="Main navigation">
         <ul class="p-navigation__items">
           {% if user.is_authenticated %}
+            {% url 'todo_list' as todo_url %}
             <li 
-              {% if '/todos' in request.path %}
+              {% if todo_url in request.path %}
                 class="p-navigation__item is-selected"
               {% else %}
                 class="p-navigation__item"
               {% endif %}
             >
-              <a class="p-navigation__link" href="{% url 'todo_list' %}">Todos</a>
+              <a class="p-navigation__link" href="{{ todo_url }}">Todos</a>
             </li>
+            {% url 'project_list' as project_url %}
             <li 
-              {% if '/projects' in request.path %}
+              {% if project_url in request.path %}
                 class="p-navigation__item is-selected"
               {% else %}
                 class="p-navigation__item"
               {% endif %}
             >
-              <a class="p-navigation__link" href="{% url 'project_list' %}">Projects</a>
+              <a class="p-navigation__link" href="{{ project_url }}">Projects</a>
             </li>
           {% endif %}
+          {% url 'contact' as contact_url %}
+          <li 
+            {% if contact_url in request.path %}
+              class="p-navigation__item is-selected"
+            {% else %}
+              class="p-navigation__item"
+            {% endif %}
+          >
+            <a class="p-navigation__link" href="{{ contact_url }}">Contact</a>
+          </li>
           <li
             {% if '/accounts' in request.path %}
               class="p-navigation__item--dropdown-toggle is-selected"

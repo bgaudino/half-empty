@@ -186,6 +186,19 @@ class TagRemoveView(LoginRequiredMixin, View):
         })
 
 
+class ConvertToProjectView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        todo = get_object_or_404(models.Todo, user=request.user, pk=pk)
+        print(todo.pk)
+        project = todo.convert_to_project()
+        print(project.pk)
+        return HttpResponse(
+            headers={
+                'HX-Redirect': reverse('project_detail', kwargs={'pk': project.pk})
+            }
+        )
+
+
 class ProjectListView(LoginRequiredMixin, ListView):
     context_object_name = 'projects'
 

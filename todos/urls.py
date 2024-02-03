@@ -7,6 +7,7 @@ urlpatterns = [
     path('todos/', views.TodoListView.as_view(), name='todo_list'),
     path('todos/<int:pk>/', views.TodoDetailView.as_view(), name='todo_detail'),
     path('todos/<int:pk>/update/', views.TodoUpdateView.as_view(), name='todo_update'),
+    path('todos/<int:pk>/convert_to_project/', views.ConvertToProjectView.as_view(), name='convert_to_project'),
     path('todos/create/', views.TodoCreateView.as_view(), name='todo_create'),
     path('todos/<int:pk>/toggle_completion/', views.TodoToggleCompletionView.as_view(), name='todo_toggle_completion'),
     path('todos/trash/<int:pk>/', views.TodoTrashView.as_view(), name='todo_trash'),

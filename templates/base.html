@@ -120,14 +120,22 @@
   </main>
   <script>
     for (const element of document.querySelectorAll('[data-dropdown]')) {
-      element.onmouseenter = function() {
-        element.parentNode.classList.add('is-active');
+      const menu = document.getElementById(element.getAttribute('aria-controls'));
+      function show() {
+        element.parentElement.classList.add('is-active');
+        menu.ariaHidden = 'false';
       }
-      element.parentElement.onmouseleave = function() {
+      function hide() {
         element.parentElement.classList.remove('is-active');
+        menu.ariaHidden = 'true';
       }
+      function isActive() {
+        return element.parentElement.classList.contains('is-active');
+      }
+      element.onmouseenter = show;
+      element.parentElement.onmouseleave = hide;
       element.onclick = function() {
-        element.parentElement.classList.toggle('is-active');
+        isActive() ? hide() : show();
       }
     }
   </script>

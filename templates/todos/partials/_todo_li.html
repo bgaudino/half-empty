@@ -17,19 +17,24 @@
     </span>
   </div>
   <div>
-    <a class="p-button" href="{% url 'todo_detail' todo.pk %}" aria-label="Todo detail">
-      <i class="p-icon--external-link"></i>
-    </a>
-    <button
-      type="button"
-      class="p-button--negative"
-      aria-label="Delete todo"
-      hx-post="{% url 'todo_trash' todo.pk %}"
-      hx-swap="delete"
-      hx-confirm="Are you sure you want to delete this todo?"
-      hx-target="#todoLi-{{ todo.pk }}"
-    >
-      <i class="p-icon--delete is-light"></i>
-    </button>
+    <span class="p-contextual-menu">
+      <button class="p-button--base p-contextual-menu__toggle has-icon" aria-controls="menu-{{ todo.pk }}" aria-expanded="false" aria-haspopup="true"><i class="p-icon--menu p-contextual-menu__indicator"></i></button>
+      <span class="p-contextual-menu__dropdown" id="menu-{{ todo.pk }}" aria-hidden="true">
+        <span class="p-contextual-menu__group">
+            <a class="p-contextual-menu__link" href="{% url 'todo_detail' todo.pk %}">View</a>
+            <a class="p-contextual-menu__link" href="{% url 'todo_update' todo.pk %}">Edit</a>
+            <button
+              type="button"
+              class="p-contextual-menu__link"
+              hx-post="{% url 'todo_trash' todo.pk %}"
+              hx-swap="delete"
+              hx-confirm="Are you sure you want to delete this todo?"
+              hx-target="#todoLi-{{ todo.pk }}"
+            >
+              Delete
+            </button>
+        </span>
+      </span>
+    </span>
   </div>
 </li>

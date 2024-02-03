@@ -24,3 +24,7 @@
 .p-card:has(> .p-search-and-filter) {
     overflow: visible;
 }
+
+.p-contextual-menu .p-contextual-menu__dropdown {
+    top: 75%;
+}

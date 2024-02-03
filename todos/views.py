@@ -8,6 +8,7 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView, V
 
 from . import models
 from . import forms
+from core.views import MessageMixin
 
 
 class TodoListView(LoginRequiredMixin, ListView):
@@ -96,8 +97,9 @@ class TodoListView(LoginRequiredMixin, ListView):
         return super().render_to_response(context, headers=headers, **response_kwargs)
 
 
-class TodoUpdateView(LoginRequiredMixin, UpdateView):
+class TodoUpdateView(LoginRequiredMixin, MessageMixin, UpdateView):
     form_class = forms.TodoForm
+    success_messages = ['Todo successfully updated']
 
     def get_queryset(self):
         return self.request.user.todo_set.with_tags().order_by('created_at', 'name')
@@ -114,8 +116,14 @@ class TodoUpdateView(LoginRequiredMixin, UpdateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    def form_invalid(self, form):
+        res = super().form_invalid(form)
+        res['HX-Retarget'] = 'body'
+        return res
+
     def form_valid(self, form):
         todo = form.save()
+        self.add_success_messages()
         return HttpResponse(headers={'HX-Redirect': todo.get_absolute_url()})
 
 
@@ -225,9 +233,10 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
-class ProjectCreateView(LoginRequiredMixin, CreateView):
+class ProjectCreateView(LoginRequiredMixin, MessageMixin, CreateView):
     model = models.Project
     form_class = forms.ProjectForm
+    success_messages = ['Project successfully created']
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -240,9 +249,10 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
         return context
 
 
-class ProjectUpdateForm(LoginRequiredMixin, UpdateView):
+class ProjectUpdateForm(LoginRequiredMixin, MessageMixin, UpdateView):
     model = models.Project
     fields = ('name', 'description', 'deadline')
+    success_messages = ['Project successfully updated']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

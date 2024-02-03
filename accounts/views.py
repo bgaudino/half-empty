@@ -1,4 +1,3 @@
-from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -8,6 +7,7 @@ from django.views.generic import CreateView, DetailView, UpdateView, FormView, T
 
 from . import models
 from . import forms
+from core.views import MessageMixin
 
 
 class NoProfileMixin:
@@ -25,10 +25,11 @@ class ProfileDetailView(LoginRequiredMixin, NoProfileMixin, DetailView):
     context_object_name = 'profile'
 
 
-class ProfileCreateView(LoginRequiredMixin, CreateView):
+class ProfileCreateView(LoginRequiredMixin, MessageMixin, CreateView):
     model = models.Profile
     fields = ('full_name', 'preferred_name')
     success_url = reverse_lazy('profile_detail')
+    success_messages = ['Profile successfully created']
 
     def dispatch(self, request, *args, **kwargs):
         if getattr(self.request.user, 'profile', None) is not None:
@@ -45,10 +46,11 @@ class ProfileCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ProfileUpdateView(LoginRequiredMixin, NoProfileMixin, UpdateView):
+class ProfileUpdateView(LoginRequiredMixin, NoProfileMixin, MessageMixin, UpdateView):
     model = models.Profile
     fields = ('full_name', 'preferred_name')
     success_url = reverse_lazy('profile_detail')
+    success_messages = ['Profile successfully updated']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -56,10 +58,11 @@ class ProfileUpdateView(LoginRequiredMixin, NoProfileMixin, UpdateView):
         return context
 
 
-class SignupView(FormView):
+class SignupView(MessageMixin, FormView):
     form_class = forms.SignupForm
     template_name = 'registration/signup.html'
     success_url = reverse_lazy(('profile_detail'))
+    success_messages = ['Your account was successfully created. Take a minute to fill out your profile']
 
     def dispatch(self, request, *args, **kwargs):
         if self.request.user.is_authenticated:
@@ -69,7 +72,7 @@ class SignupView(FormView):
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        messages.add_message(self.request, messages.SUCCESS, 'Your account was successfully created. Take a minute to fill out your profile')
+        self.add_success_messages()
         return super().form_valid(form)
 
 
@@ -77,9 +80,6 @@ class SecurityView(TemplateView):
     template_name = 'registration/security.html'
 
 
-class PasswordChangeView(auth_views.PasswordChangeView):
+class PasswordChangeView(MessageMixin, auth_views.PasswordChangeView):
     success_url = reverse_lazy('security')
-
-    def form_valid(self, form):
-        messages.add_message(self.request, messages.SUCCESS, 'Your password was changed')
-        return super().form_valid(form)
+    success_messages = ['Your password was successfully changed']

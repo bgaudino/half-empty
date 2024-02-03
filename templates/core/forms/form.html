@@ -11,11 +11,5 @@
 {% endfor %}
 
 {% for field in form.visible_fields %}
-  <div {% if field.errors %}class="p-form-validation is-error"{% endif %}>
-    {{ field.label_tag }}
-    {{ field }}
-    {% for error in field.errors %}
-      <p class="p-form-validation__message">{{ error }}</p>
-    {% endfor %}
-  </div>
+  {% include 'core/forms/field.html' with field=field %}
 {% endfor %}

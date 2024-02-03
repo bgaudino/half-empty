@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.conf import settings
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, FormView
 
 from .forms import ContactForm
 from .models import ContactFormSubmission
@@ -36,4 +36,35 @@ class ContactFormView(CreateView):
     def form_valid(self, form):
         res = super().form_valid(form)
         messages.add_message(self.request, messages.SUCCESS, 'Your message is sent. Someone will get back to you soon!')
+        return res
+
+
+class MessageMixin(FormView):
+    success_messages = ['Form successfully submitted']
+    error_messages = ['Please correct the following errors']
+
+    def add_success_messages(self):
+        success_messages = self.success_messages
+        if hasattr(self, 'get_success_messages'):
+            success_messages = self.get_success_messages()
+        if success_messages is not None:
+            for message in success_messages:
+                messages.add_message(self.request, messages.SUCCESS, message)
+
+    def add_error_messages(self):
+        error_messages = self.error_messages
+        if hasattr(self, 'get_error_messages'):
+            error_messages = self.get_error_messages()
+        if error_messages is not None:
+            for message in error_messages:
+                messages.add_message(self.request, messages.ERROR, message)
+
+    def form_invalid(self, form):
+        res = super().form_invalid(form)
+        self.add_error_messages()
+        return res
+
+    def form_valid(self, form):
+        res = super().form_valid(form)
+        self.add_success_messages()
         return res

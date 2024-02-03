@@ -1,4 +1,6 @@
 <div id="todoList">
+  {% load static %}
+  <script src="{% static 'js/contextualMenu.js' %}" defer></script>
   <ul id="todos" class="p-list--divided">
     {% for lead, value in chips %}
     <span class="p-chip--information">

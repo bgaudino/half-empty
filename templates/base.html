@@ -49,6 +49,16 @@
               <a class="p-navigation__link" href="{{ project_url }}">Projects</a>
             </li>
           {% endif %}
+          {% url 'submit_quote' as quote_url %}
+          <li 
+            {% if quote_url in request.path %}
+              class="p-navigation__item is-selected"
+            {% else %}
+              class="p-navigation__item"
+            {% endif %}
+          >
+            <a class="p-navigation__link" href="{{ quote_url }}">Quotes</a>
+          </li>
           {% url 'contact' as contact_url %}
           <li 
             {% if contact_url in request.path %}

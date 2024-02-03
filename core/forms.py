@@ -25,7 +25,21 @@ def google_captcha_validator(value):
         raise forms.ValidationError('Invalid reCAPTCHA')
 
 
-class ContactForm(forms.ModelForm):
+class RecaptchaField(forms.CharField):
+    widget = forms.HiddenInput
+    validators = [google_captcha_validator]
+    required = True
+
+
+class RecaptchaForm(forms.Form):
+    SITE_KEY = settings.RECAPTCHA_SITE_KEY
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['g-recaptcha-response'] = RecaptchaField()
+
+
+class ContactForm(RecaptchaForm, forms.ModelForm):
     class Meta:
         model = models.ContactFormSubmission
         fields = ('email', 'message')
@@ -36,13 +50,9 @@ class ContactForm(forms.ModelForm):
 
         if self.user:
             self.fields.pop('email')
+            self.fields.pop('g-recaptcha-response')
         else:
             self.fields['email'].required = True
-            self.fields['g-recaptcha-response'] = forms.fields.CharField(
-                widget=forms.HiddenInput,
-                validators=[google_captcha_validator],
-                required=True,
-            )
 
     def save(self, commit=True):
         is_new = self.instance.pk is None

@@ -5,6 +5,8 @@ on: [push, pull_request]
 jobs:
   tests:
     runs-on: ubuntu-latest
+    env:
+      DJANGO_SETTINGS_MODULE: half_empty.settings_test
     services:
       postgres:
         image: postgres:latest

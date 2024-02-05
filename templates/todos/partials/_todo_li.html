@@ -12,7 +12,7 @@
       {% if todo.tag_count > 2 %}
         <span class="p-badge">
           +{{ todo.tag_count|add:"-2" }}
-        </sub>
+        </span>
       {% endif %}
     </span>
   </div>
@@ -45,3 +45,11 @@
     </span>
   </div>
 </li>
+{% url 'todo_create' as todo_create_url %}
+<!-- FIXME: Including this js to make this new todo interactive
+Should probably rerender the whole list rathern than appending new todo
+Also causes sort/filtering/pagination issues -->
+{% if request.path == todo_create_url %}
+  {% load static %}
+  <script src="{% static 'js/contextualMenu.js' %}"></script>
+{% endif %}

@@ -1,5 +1,5 @@
 <div id="searchAndFilter" class="p-search-and-filter mb-1">
-  <div class="p-search-and-filter__search-container" aria-expanded="false" data-active="true" data-empty="true">
+  <div class="p-search-and-filter__search-container" data-active="true" data-empty="true">
     <form
       id="searchForm"
       class="p-search-and-filter__box"
@@ -53,17 +53,11 @@
   const filter = document.getElementById('filter');
   function hideFilters() {
     search.parentElement.parentElement.dataset.active = 'false';
-    filter.ariaHidden = true;
-  }
-  function isActive() {
-    return document.querySelector('.p-search-and-filter__search-container').dataset.active === 'true';
+    filter.ariaHidden = 'true';
   }
   function showFilters() {
     search.parentElement.parentElement.dataset.active = 'true';
     filter.ariaHidden = 'false';
-  }
-  function toggleFilters() {
-    isActive() ? hideFilters() : showFilters();
   }
   search.onfocus = showFilters;
   document.getElementById('searchAndFilter').onclick = function(e) {
@@ -72,7 +66,12 @@
   window.onclick = hideFilters;
   document.getElementById('searchForm').onsubmit = function(e) {
     e.preventDefault();
-    toggleFilters();
+    const container = document.querySelector('.p-search-and-filter__search-container')
+    if (container.dataset.active === 'true') {
+      hideFilters();
+    } else {
+      showFilters();
+    }
   }
   document.getElementById('filtersForm').onsubmit = function(e) {
     e.preventDefault();
@@ -80,7 +79,6 @@
   }
   document.getElementById('closeFiltersButton').onclick = function(e) {
     for (const element of e.target.parentElement.querySelectorAll('input:not([type="hidden"])')) {
-      console.log(element);
       element.value = '';
     }
     e.target.parentElement.querySelector('select').value = 'active';

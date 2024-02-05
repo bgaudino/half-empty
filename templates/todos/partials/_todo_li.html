@@ -18,7 +18,7 @@
   </div>
   <div>
     <span class="p-contextual-menu">
-      <button class="p-button--base p-contextual-menu__toggle has-icon" aria-controls="menu-{{ todo.pk }}" aria-expanded="false" aria-haspopup="true"><i class="p-icon--menu p-contextual-menu__indicator"></i></button>
+      <button class="p-button--base p-contextual-menu__toggle has-icon" aria-controls="menu-{{ todo.pk }}" aria-expanded="false" aria-haspopup="true" aria-label="Actions menu"><i class="p-icon--menu p-contextual-menu__indicator"></i></button>
       <span class="p-contextual-menu__dropdown" id="menu-{{ todo.pk }}" aria-hidden="true">
         <span class="p-contextual-menu__group">
             <a class="p-contextual-menu__link" href="{% url 'todo_detail' todo.pk %}">View</a>

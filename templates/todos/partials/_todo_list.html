@@ -1,7 +1,7 @@
 <div id="todoList">
   {% load static %}
   <script src="{% static 'js/contextualMenu.js' %}" defer></script>
-  <ul id="todos" class="p-list--divided">
+  <div id="todos">
     {% for lead, value in chips %}
     <span class="p-chip--information">
       {% if lead %}
@@ -10,10 +10,12 @@
       <span class="p-chip__value">{{ value }}</span>
     </span>
     {% endfor %}
-    {% for todo in todos %}
-      {% include 'todos/partials/_todo_li.html' with todo=todo link=True %}
-    {% endfor %}
-  </ul>
+    <ul id="todos" class="p-list--divided">
+      {% for todo in todos %}
+        {% include 'todos/partials/_todo_li.html' with todo=todo link=True %}
+      {% endfor %}
+    </ul>
+  </div>
   {% if not disable_pagination %}
     <nav class="p-pagination" aria-label="Pagination">
       <ol class="p-pagination__items">

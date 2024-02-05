@@ -2,7 +2,7 @@
   id="todoCreateForm"
   hx-post="{% url 'todo_create' %}" 
   hx-include="[name='tags']"
-  hx-target="#todos"
+  hx-target="#todos > ul"
   hx-swap="beforeend show:#todos:bottom"
 >
   {% csrf_token %}

@@ -62,5 +62,5 @@ class ContactFormView(MessageMixin, CreateView):
 
     def form_invalid(self, form):
         if errors := form.errors.get('g-recaptcha-response'):
-            messages.add_message(self.request, messages.ERROR, 'reCaptcha: {}'.format('\n'.join(errors)))
+            self.error_messages.append('reCaptcha: {}'.format('\n'.join(errors)))
         return super().form_invalid(form)

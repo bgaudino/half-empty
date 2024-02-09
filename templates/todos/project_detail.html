@@ -30,8 +30,8 @@
             </li>
           {% endif %}
         </ul>
-        <p class="p-media-object__content">{{ project.description }}</p>
       </div>
+      <p><pre>{{ project.description }}</pre></p>
     </div>
     {% include 'todos/partials/_add_todo_form.html' %}
     {% csrf_token %}

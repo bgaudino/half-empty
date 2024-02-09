@@ -28,3 +28,7 @@
 .p-contextual-menu .p-contextual-menu__dropdown {
     top: 75%;
 }
+
+pre {
+    width: 100%;
+}

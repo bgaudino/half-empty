@@ -129,26 +129,26 @@
     </div>
   </main>
   <script>
-    for (const element of document.querySelectorAll('[data-dropdown]')) {
-      const menu = document.getElementById(element.getAttribute('aria-controls'));
+    const dropdown = document.querySelector('.p-navigation__item--dropdown-toggle');
+    const controller = document.querySelector('[data-dropdown="account"]');
+    const menu = document.getElementById(controller.getAttribute('aria-controls')); 
       function show() {
-        element.parentElement.classList.add('is-active');
+        dropdown.classList.add('is-active');
         menu.ariaHidden = 'false';
       }
       function hide() {
-        element.parentElement.classList.remove('is-active');
+        dropdown.classList.remove('is-active');
         menu.ariaHidden = 'true';
       }
       function isActive() {
-        return element.parentElement.classList.contains('is-active');
+        return dropdown.classList.contains('is-active');
       }
       function toggle() {
         isActive() ? hide() : show();
       }
-      element.addEventListener('touchstart', toggle);
-      element.addEventListener('mouseenter', show);
-      element.parentElement.addEventListener('mouseleave', hide);
-    }
+      controller.addEventListener('touchstart', toggle);
+      controller.addEventListener('mouseenter', show);
+      dropdown.addEventListener('mouseleave', hide);
   </script>
 </body>
 </html>

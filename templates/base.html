@@ -143,12 +143,21 @@
       function isActive() {
         return dropdown.classList.contains('is-active');
       }
-      function toggle() {
+      function toggle(e) {
+        e.stopPropagation();
         isActive() ? hide() : show();
       }
-      controller.addEventListener('touchstart', toggle);
+      function closeNav() {
+        if (window.location.hash === '#navigation') {
+          window.location.hash = '#navigation-closed';
+        }
+      }
       controller.addEventListener('mouseenter', show);
       dropdown.addEventListener('mouseleave', hide);
+      controller.addEventListener('touchstart', toggle);
+      controller.addEventListener('click', (e) => e.stopPropagation());
+      document.addEventListener('click', closeNav);
+      document.addEventListener('touchstart', closeNav);
   </script>
 </body>
 </html>

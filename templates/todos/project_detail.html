@@ -31,12 +31,12 @@
           {% endif %}
         </ul>
       </div>
-      <p><pre>{{ project.description }}</pre></p>
     </div>
+    <p><pre>{{ project.description }}</pre></p>
     {% include 'todos/partials/_add_todo_form.html' %}
     {% csrf_token %}
     <div class="u-clearfix">
-      <h4 class="u-float-left">Todos</h4>
+      <h4 class="u-float-left">Todos <span class="p-badge">{{ todos|length }}</span></h4>
       <form
         id="sortForm"
         class="p-form p-form--inline u-float-right"

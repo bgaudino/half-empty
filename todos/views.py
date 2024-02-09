@@ -1,6 +1,7 @@
 from urllib.parse import urlparse
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Prefetch
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
@@ -218,7 +219,9 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'project'
 
     def get_queryset(self):
-        return self.request.user.project_set.all()
+        return self.request.user.project_set.prefetch_related(
+            Prefetch('todo_set', queryset=models.Todo.objects.active().with_tags())
+        ).order_by('-created_at', 'name')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -229,7 +232,7 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
             project=self.object,
         )
         context['sort_todos_form'] = forms.SortForm(initial=self.request.GET)
-        context['todos'] = self.object.todo_set.active().order_by('created_at', 'name')
+        context['todos'] = self.object.todo_set.all()
         return context
 
 

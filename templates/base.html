@@ -142,15 +142,12 @@
       function isActive() {
         return element.parentElement.classList.contains('is-active');
       }
-      function toggle(e) {
-        e.stopPropagation();
+      function toggle() {
         isActive() ? hide() : show();
       }
-      document.addEventListener('click', hide);
-      element.addEventListener('mouseenter', show);
-      element.addEventListener('mouseleave', show);
-      element.addEventListener('click', toggle);
       element.addEventListener('touchstart', toggle);
+      element.addEventListener('mouseenter', show);
+      element.parentElement.addEventListener('mouseleave', hide);
     }
   </script>
 </body>

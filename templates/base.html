@@ -132,32 +132,37 @@
     const dropdown = document.querySelector('.p-navigation__item--dropdown-toggle');
     const controller = document.querySelector('[data-dropdown="account"]');
     const menu = document.getElementById(controller.getAttribute('aria-controls')); 
-      function show() {
-        dropdown.classList.add('is-active');
-        menu.ariaHidden = 'false';
+    function show() {
+      dropdown.classList.add('is-active');
+      menu.ariaHidden = 'false';
+    }
+    function hide() {
+      dropdown.classList.remove('is-active');
+      menu.ariaHidden = 'true';
+    }
+    function isActive() {
+      return dropdown.classList.contains('is-active');
+    }
+    function toggle() {
+      isActive() ? hide() : show();
+    }
+    function stopPropagation(e) {
+      e.stopPropagation();
+    }
+    function closeNav() {
+      if (window.location.hash === '#navigation') {
+        window.location.hash = '#navigation-closed';
       }
-      function hide() {
-        dropdown.classList.remove('is-active');
-        menu.ariaHidden = 'true';
-      }
-      function isActive() {
-        return dropdown.classList.contains('is-active');
-      }
-      function toggle(e) {
-        e.stopPropagation();
-        isActive() ? hide() : show();
-      }
-      function closeNav() {
-        if (window.location.hash === '#navigation') {
-          window.location.hash = '#navigation-closed';
-        }
-      }
-      controller.addEventListener('mouseenter', show);
-      dropdown.addEventListener('mouseleave', hide);
-      controller.addEventListener('touchstart', toggle);
-      controller.addEventListener('click', (e) => e.stopPropagation());
-      document.addEventListener('click', closeNav);
-      document.addEventListener('touchstart', closeNav);
+    }
+    for (const link of document.querySelectorAll('.p-navigation__link')) {
+      link.addEventListener('click', stopPropagation);
+      link.addEventListener('touchstart', stopPropagation);
+    } 
+    controller.addEventListener('mouseenter', show);
+    dropdown.addEventListener('mouseleave', hide);
+    controller.addEventListener('touchstart', toggle);
+    document.addEventListener('click', closeNav);
+    document.addEventListener('touchstart', closeNav);
   </script>
 </body>
 </html>

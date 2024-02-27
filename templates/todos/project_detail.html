@@ -32,7 +32,9 @@
         </ul>
       </div>
     </div>
+    {% if project.description %}
     <p><pre>{{ project.description }}</pre></p>
+    {% endif %}
     {% include 'todos/partials/_add_todo_form.html' %}
     {% csrf_token %}
     <div class="u-clearfix">

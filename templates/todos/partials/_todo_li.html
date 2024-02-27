@@ -6,6 +6,7 @@
   <div class="todo-tags">
     {% include 'todos/partials/_completable.html' with completable=todo class_name='p-checkbox' %}
     <span class="u-hide u-show--large">
+      {% include 'todos/partials/_priority.html' with todo=todo %}
       {% for tag in todo.tags.all|slice:":2" %}
         <span class="p-chip--information">{{ tag.name }}</span>
       {% endfor %}

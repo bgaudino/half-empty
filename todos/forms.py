@@ -10,7 +10,7 @@ User = get_user_model()
 class TodoForm(forms.ModelForm):
     class Meta:
         model = models.Todo
-        fields = ('name', 'project', 'deadline', 'description', 'tags')
+        fields = ('name', 'project', 'priority', 'deadline', 'description', 'tags')
         widgets = {
             'name': forms.TextInput({
                 'placeholder': 'Add something to do',
@@ -50,6 +50,7 @@ class AddTagForm(forms.Form):
 
 class FilterTodosForm(forms.Form):
     search = forms.CharField(max_length=255, required=False)
+    priority = forms.ChoiceField(choices=(('any', 'Any'),) + models.PRIORITIES)
     tag = forms.CharField(max_length=255, required=False, widget=forms.TextInput({'list': 'tags'}))
     deadline_start = forms.DateField(required=False, widget=forms.DateInput({'type': 'date', 'class': 'p-form__control'}))
     deadline_end = forms.DateField(required=False, widget=forms.DateInput({'type': 'date'}))
@@ -76,11 +77,19 @@ class FilterTodosForm(forms.Form):
         elif self.user:
             self.fields['project'].queryset = self.user.project_set.all()
 
+    def clean_priority(self):
+        priority = self.cleaned_data.get('priority')
+        try:
+            return int(priority)
+        except ValueError:
+            return None
+
 
 class SortForm(forms.Form):
     sort = forms.ChoiceField(choices=(
         ('created_at', 'Oldest'),
         ('-created_at', 'Newest'),
+        ('priority', 'Priority'),
         ('name', 'A to Z'),
         ('-name', 'Z to A'),
         ('deadline', 'Deadline (earliest)'),

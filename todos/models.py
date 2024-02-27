@@ -96,11 +96,29 @@ class TodoQuerySet(TaskQuerySet):
         return self.prefetch_related('tags').annotate(tag_count=models.Count('tags'))
 
 
+PRIORITIES = ((0, 'Urgent'), (1, 'High'), (2, 'Medium'), (3, 'Low'))
+
+
 class Todo(TimeStampedModel, AbstractTaskModel):
     project = models.ForeignKey(Project, null=True, blank=True, on_delete=models.PROTECT)
     tags = models.ManyToManyField(Tag, blank=True)
+    priority = models.IntegerField(
+        blank=True,
+        null=True,
+        max_length=4,
+        choices=PRIORITIES,
+    )
 
     objects = TodoQuerySet.as_manager()
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(priority__gte=0, priority__lte=3) | models.Q(priority__isnull=True),
+                name='priority_invalid_choice',
+                violation_error_message='Invalid choice for priority',
+            )
+        ]
 
     def __str__(self):
         return self.name

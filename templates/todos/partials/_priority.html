@@ -1,0 +1,9 @@
+{% if todo.priority == 0 %}
+<span class="p-chip--negative">{{ todo.get_priority_display }}</span>
+{% elif todo.priority == 1 %}
+<span class="p-chip--caution">{{ todo.get_priority_display }}</span>
+{% elif todo.priority == 2 %}
+<span class="p-chip--information">{{ todo.get_priority_display }}</span>
+{% elif todo.priority == 3 %}
+<span class="p-chip">{{ todo.get_priority_display }}</span>
+{% endif %}

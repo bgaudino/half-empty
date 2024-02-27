@@ -12,6 +12,7 @@
       {% csrf_token %}
       {% include 'core/forms/field.html' with field=form.name %}
       {% include 'core/forms/field.html' with field=form.project %}
+      {% include 'core/forms/field.html' with field=form.priority %}
       {% include 'core/forms/field.html' with field=form.deadline %}
       {% include 'core/forms/field.html' with field=form.description %}
     </form>

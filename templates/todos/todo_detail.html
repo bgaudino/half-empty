@@ -13,6 +13,7 @@
       <a href="{% url 'project_detail' todo.project.pk %}">{{ todo.project.name }}</a>
     {% endif %}
     <div>
+      {% include 'todos/partials/_priority.html' with todo=todo %}
       {% for tag in todo.tags.all %}
         <span class="p-chip--information">{{ tag.name }}</span>
       {% endfor %}

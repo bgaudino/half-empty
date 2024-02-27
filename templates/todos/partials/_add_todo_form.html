@@ -23,6 +23,8 @@
     {{ add_todo_form.project.label_tag }}
   {% endif %}
   {{ add_todo_form.project }}
+  {{ add_todo_form.priority.label_tag }}
+  {{ add_todo_form.priority }}
   <datalist id="tags">
     {% for tag in tags %}
       <option value="{{ tag.name }}"></option>

@@ -45,6 +45,8 @@ class TodoListView(LoginRequiredMixin, ListView):
             qs = qs.filter(deadline__gte=deadline_start)
         if deadline_end := self.filters.get('deadline_end'):
             qs = qs.filter(deadline__lte=deadline_end)
+        if (priority := self.filters.get('priority')) is not None:
+            qs = qs.filter(priority=priority)
         if sort := self.filters.get('sort'):
             qs = qs.order_by(sort)
         else:

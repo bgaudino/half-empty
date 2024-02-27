@@ -67,6 +67,8 @@ class TodoListView(LoginRequiredMixin, ListView):
             chips.append(('Tag', tag))
         if status := self.filters.get('status'):
             chips.append(('Status', status.replace('_', ' ').title()))
+        else:
+            chips.append(('Status', 'Active'))
         start = self.filters.get('deadline_start')
         end = self.filters.get('deadline_end')
         if start and end:

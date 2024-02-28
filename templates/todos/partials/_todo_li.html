@@ -31,6 +31,29 @@
             >
               Convert to project
             </button>
+            {% if todo.is_trashed %}
+            <button
+              type="button"
+              class="p-contextual-menu__link"
+              hx-post="{% url 'todo_restore' todo.pk %}"
+              hx-include="[name=csrfmiddlewaretoken]"
+              hx-swap="delete"
+              hx-target="#todoLi-{{ todo.pk }}"
+            >
+              Restore
+            </button>
+            <button
+              type="button"
+              class="p-contextual-menu__link"
+              hx-post="{% url 'todo_delete' todo.pk %}"
+              hx-include="[name=csrfmiddlewaretoken]"
+              hx-swap="delete"
+              hx-confirm="Are you sure you want to permanently delete this todo? This cannot be undone."
+              hx-target="#todoLi-{{ todo.pk }}"
+            >
+              Permanently Delete
+            </button>
+            {% else %}
             <button
               type="button"
               class="p-contextual-menu__link"
@@ -41,6 +64,7 @@
             >
               Delete
             </button>
+            {% endif %}
         </span>
       </span>
     </span>

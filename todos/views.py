@@ -158,8 +158,21 @@ class TodoToggleCompletionView(LoginRequiredMixin, View):
 class TodoTrashView(LoginRequiredMixin, View):
     def post(self, request, pk):
         todo = get_object_or_404(models.Todo, user=request.user, pk=pk)
-        todo.is_trashed = True
-        todo.save()
+        todo.trash()
+        return HttpResponse()
+
+
+class TodoRestoreView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        todo = get_object_or_404(request.user.todo_set.trashed(), pk=pk)
+        todo.restore()
+        return HttpResponse()
+
+
+class TodoDeleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        todo = get_object_or_404(request.user.todo_set.trashed(), pk=pk)
+        todo.delete()
         return HttpResponse()
 
 

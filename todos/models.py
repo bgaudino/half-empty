@@ -62,6 +62,10 @@ class AbstractTaskModel(models.Model):
         self.is_trashed = True
         self.save()
 
+    def restore(self):
+        self.is_trashed = False
+        self.save()
+
 
 class ProjectQuerySet(TaskQuerySet):
     def with_todo_count(self):

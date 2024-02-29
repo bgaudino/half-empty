@@ -45,9 +45,9 @@ class FilterTodosMixin:
         if (priority := self.filters.get('priority')) is not None:
             qs = qs.filter(priority=priority)
         if sort := self.filters.get('sort'):
-            qs = qs.order_by(sort)
+            qs = qs.order_by(sort, 'name', 'pk')
         else:
-            qs = qs.order_by('created_at', 'name')
+            qs = qs.order_by('created_at', 'name', 'pk')
         return qs
 
     def get_chips(self):

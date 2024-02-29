@@ -88,7 +88,7 @@ class PasswordChangeView(LoginRequiredMixin, FormMessageView, auth_views.Passwor
 class SettingsView(LoginRequiredMixin, FormMessageView, UpdateView):
     success_messages = ['Your preferences have been successfully updated']
     success_url = reverse_lazy('settings')
-    fields = ('hide_completed_todos', 'default_ordering')
+    fields = ('hide_completed_todos', 'default_ordering', 'receive_email_reminders')
 
     def get_object(self, *args, **kwargs):
         return self.request.user.settings

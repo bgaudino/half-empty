@@ -109,7 +109,6 @@ class Todo(TimeStampedModel, AbstractTaskModel):
     priority = models.IntegerField(
         blank=True,
         null=True,
-        max_length=4,
         choices=PRIORITIES,
     )
 

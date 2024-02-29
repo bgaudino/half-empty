@@ -1,6 +1,5 @@
 from urllib.parse import urlparse
 
-from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch
 from django.http import HttpResponseBadRequest, HttpResponse
@@ -10,6 +9,7 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView, V
 
 from . import models
 from . import forms
+from core.paginator import GracefulPaginator
 from core.views import MessageMixin
 
 
@@ -78,6 +78,7 @@ class FilterTodosMixin:
 class TodoListView(LoginRequiredMixin, FilterTodosMixin, ListView):
     context_object_name = 'todos'
     paginate_by = 10
+    paginator_class = GracefulPaginator
 
     def get_queryset(self):
         return self.filter_todos(self.request.user.todo_set.with_tags())
@@ -257,7 +258,7 @@ class ProjectDetailView(LoginRequiredMixin, FilterTodosMixin, DetailView):
             project=self.object,
         )
         qs = self.filter_todos(self.object.todo_set.with_tags())
-        paginator = Paginator(qs, 10)
+        paginator = GracefulPaginator(qs, 10)
         try:
             page_number = int(self.request.GET.get('page'))
         except (ValueError, TypeError):

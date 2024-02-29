@@ -3,14 +3,14 @@ from django.views.generic import CreateView, TemplateView
 
 from .models import Quote
 from .forms import QuoteForm
-from core.views import MessageMixin
+from core.views import FormMessageView
 
 
 class QuoteView(TemplateView):
     template_name = 'quotes/partials/_quote.html'
 
 
-class QuoteSubmissionView(MessageMixin, CreateView):
+class QuoteSubmissionView(FormMessageView, CreateView):
     model = Quote
     form_class = QuoteForm
     success_messages = ['Quote successfully submitted']

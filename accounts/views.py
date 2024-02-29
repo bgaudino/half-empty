@@ -7,7 +7,7 @@ from django.views.generic import CreateView, DetailView, UpdateView, FormView, T
 
 from . import models
 from . import forms
-from core.views import MessageMixin
+from core.views import FormMessageView
 
 
 class NoProfileMixin:
@@ -25,7 +25,7 @@ class ProfileDetailView(LoginRequiredMixin, NoProfileMixin, DetailView):
     context_object_name = 'profile'
 
 
-class ProfileCreateView(LoginRequiredMixin, MessageMixin, CreateView):
+class ProfileCreateView(LoginRequiredMixin, FormMessageView, CreateView):
     model = models.Profile
     fields = ('full_name', 'preferred_name')
     success_url = reverse_lazy('profile_detail')
@@ -46,7 +46,7 @@ class ProfileCreateView(LoginRequiredMixin, MessageMixin, CreateView):
         return super().form_valid(form)
 
 
-class ProfileUpdateView(LoginRequiredMixin, NoProfileMixin, MessageMixin, UpdateView):
+class ProfileUpdateView(LoginRequiredMixin, NoProfileMixin, FormMessageView, UpdateView):
     model = models.Profile
     fields = ('full_name', 'preferred_name')
     success_url = reverse_lazy('profile_detail')
@@ -58,7 +58,7 @@ class ProfileUpdateView(LoginRequiredMixin, NoProfileMixin, MessageMixin, Update
         return context
 
 
-class SignupView(MessageMixin, FormView):
+class SignupView(FormMessageView, FormView):
     form_class = forms.SignupForm
     template_name = 'registration/signup.html'
     success_url = reverse_lazy(('profile_detail'))
@@ -76,10 +76,19 @@ class SignupView(MessageMixin, FormView):
         return super().form_valid(form)
 
 
-class SecurityView(TemplateView):
+class SecurityView(LoginRequiredMixin, TemplateView):
     template_name = 'registration/security.html'
 
 
-class PasswordChangeView(MessageMixin, auth_views.PasswordChangeView):
+class PasswordChangeView(LoginRequiredMixin, FormMessageView, auth_views.PasswordChangeView):
     success_url = reverse_lazy('security')
     success_messages = ['Your password was successfully changed']
+
+
+class SettingsView(LoginRequiredMixin, FormMessageView, UpdateView):
+    success_messages = ['Your preferences have been successfully updated']
+    success_url = reverse_lazy('settings')
+    fields = ('hide_completed_todos', 'default_ordering')
+
+    def get_object(self, *args, **kwargs):
+        return self.request.user.settings

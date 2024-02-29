@@ -7,7 +7,7 @@ from .forms import ContactForm
 from .models import ContactFormSubmission
 
 
-class MessageMixin(FormView):
+class FormMessageView(FormView):
     success_messages = ['Form successfully submitted']
     error_messages = ['Please correct the following errors']
 
@@ -38,7 +38,7 @@ class MessageMixin(FormView):
         return res
 
 
-class ContactFormView(MessageMixin, CreateView):
+class ContactFormView(FormMessageView, CreateView):
     model = ContactFormSubmission
     form_class = ContactForm
     success_url = reverse_lazy('index')

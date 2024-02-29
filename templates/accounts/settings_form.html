@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="p-card">
+    <h3>Settings</h3>
+    <div class="p-card__content">
+      <form method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <button class="p-button--brand" type="submit">Save</button> 
+      </form>
+    </div>
+  </div>
+{% endblock %}

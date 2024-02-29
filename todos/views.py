@@ -10,7 +10,7 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView, V
 from . import models
 from . import forms
 from core.paginator import GracefulPaginator
-from core.views import MessageMixin
+from core.views import FormMessageView
 
 
 class FilterTodosMixin:
@@ -120,7 +120,7 @@ class TodoListView(LoginRequiredMixin, FilterTodosMixin, ListView):
         return super().render_to_response(context, headers=headers, **response_kwargs)
 
 
-class TodoUpdateView(LoginRequiredMixin, MessageMixin, UpdateView):
+class TodoUpdateView(LoginRequiredMixin, FormMessageView, UpdateView):
     form_class = forms.TodoForm
     success_messages = ['Todo successfully updated']
 
@@ -275,7 +275,7 @@ class ProjectDetailView(LoginRequiredMixin, FilterTodosMixin, DetailView):
         return context
 
 
-class ProjectCreateView(LoginRequiredMixin, MessageMixin, CreateView):
+class ProjectCreateView(LoginRequiredMixin, FormMessageView, CreateView):
     model = models.Project
     form_class = forms.ProjectForm
     success_messages = ['Project successfully created']
@@ -291,7 +291,7 @@ class ProjectCreateView(LoginRequiredMixin, MessageMixin, CreateView):
         return context
 
 
-class ProjectUpdateForm(LoginRequiredMixin, MessageMixin, UpdateView):
+class ProjectUpdateForm(LoginRequiredMixin, FormMessageView, UpdateView):
     model = models.Project
     fields = ('name', 'description', 'deadline')
     success_messages = ['Project successfully updated']

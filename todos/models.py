@@ -102,6 +102,16 @@ class TodoQuerySet(TaskQuerySet):
 
 PRIORITIES = ((0, 'Urgent'), (1, 'High'), (2, 'Medium'), (3, 'Low'))
 
+ORDERING = (
+    ('created_at', 'Oldest'),
+    ('-created_at', 'Newest'),
+    ('priority', 'Priority'),
+    ('name', 'A to Z'),
+    ('-name', 'Z to A'),
+    ('deadline', 'Deadline (earliest)'),
+    ('-deadline', 'Deadline (latest)'),
+)
+
 
 class Todo(TimeStampedModel, AbstractTaskModel):
     project = models.ForeignKey(Project, null=True, blank=True, on_delete=models.PROTECT)

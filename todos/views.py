@@ -15,10 +15,10 @@ from core.views import MessageMixin
 
 class FilterTodosMixin:
     def filter_todos(self, qs):
-        form = forms.FilterTodosForm(self.request.GET, user=self.request.user)
+        form = forms.FilterTodosForm(data=self.request.GET, user=self.request.user)
         form.full_clean()
         self.filters = form.cleaned_data
-        sort_form = forms.SortForm(self.request.GET)
+        sort_form = forms.SortForm(self.request.GET, user=self.request.user)
         sort_form.full_clean()
         self.filters.update(sort_form.cleaned_data)
         if search := self.filters.get('search'):
@@ -34,8 +34,13 @@ class FilterTodosMixin:
                 qs = qs.todo()
             case 'overdue':
                 qs = qs.overdue()
-            case _:
+            case 'active':
                 qs = qs.active()
+            case _:
+                if self.request.user.settings.hide_completed_todos:
+                    qs = qs.todo()
+                else:
+                    qs = qs.active()
         if project := self.filters.get('project'):
             qs = qs.filter(project=project)
         if deadline_start := self.filters.get('deadline_start'):
@@ -44,10 +49,8 @@ class FilterTodosMixin:
             qs = qs.filter(deadline__lte=deadline_end)
         if (priority := self.filters.get('priority')) is not None:
             qs = qs.filter(priority=priority)
-        if sort := self.filters.get('sort'):
-            qs = qs.order_by(sort, 'name', 'pk')
-        else:
-            qs = qs.order_by('created_at', 'name', 'pk')
+        sort = self.filters.get('sort') or self.request.user.settings.get_default_ordering()
+        qs = qs.order_by(sort, 'pk')
         return qs
 
     def get_chips(self):
@@ -59,7 +62,8 @@ class FilterTodosMixin:
         if status := self.filters.get('status'):
             chips.append(('Status', status.replace('_', ' ').title()))
         else:
-            chips.append(('Status', 'Active'))
+            status = 'To do' if self.request.user.settings.hide_completed_todos else 'Active'
+            chips.append(('Status', status))
         if (priority := self.filters.get('priority')) is not None:
             priority = next(p[1] for p in models.PRIORITIES if p[0] == priority)
             if priority:
@@ -90,8 +94,14 @@ class TodoListView(LoginRequiredMixin, FilterTodosMixin, ListView):
             context['add_tag_form'] = forms.AddTagForm()
             tags = self.request.user.tag_set.all()
             context['tags'] = tags
-            context['filter_todos_form'] = forms.FilterTodosForm(initial=self.request.GET)
-            context['sort_todos_form'] = forms.SortForm(initial=self.request.GET)
+            context['filter_todos_form'] = forms.FilterTodosForm(
+                initial=self.request.GET,
+                user=self.request.user
+            )
+            context['sort_todos_form'] = forms.SortForm(
+                initial=self.request.GET,
+                user=self.request.user,
+            )
         context['chips'] = self.get_chips()
 
         return context
@@ -250,13 +260,17 @@ class ProjectDetailView(LoginRequiredMixin, FilterTodosMixin, DetailView):
         context['filter_todos_form'] = forms.FilterTodosForm(
             initial=self.request.GET,
             project=self.object,
+            user=self.request.user,
         )
         qs = self.filter_todos(self.object.todo_set.with_tags())
         paginator = GracefulPaginator(qs, 10)
         page = paginator.get_page(self.request.GET.get('page', 1))
         context['page_obj'] = page
         context['todos'] = page.object_list
-        context['sort_todos_form'] = forms.SortForm(initial=self.request.GET)
+        context['sort_todos_form'] = forms.SortForm(
+            initial=self.request.GET,
+            user=self.request.user,
+        )
         context['chips'] = self.get_chips()
         return context
 

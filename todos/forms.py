@@ -77,6 +77,11 @@ class FilterTodosForm(forms.Form):
         elif self.user:
             self.fields['project'].queryset = self.user.project_set.all()
 
+    def get_initial_for_field(self, field, field_name: str):
+        if field_name == 'status' and not self.initial.get('status') and self.user:
+            return 'todo' if self.user.settings.hide_completed_todos else 'active'
+        return super().get_initial_for_field(field, field_name)
+
     def clean_priority(self):
         priority = self.cleaned_data.get('priority')
         try:
@@ -86,15 +91,16 @@ class FilterTodosForm(forms.Form):
 
 
 class SortForm(forms.Form):
-    sort = forms.ChoiceField(choices=(
-        ('created_at', 'Oldest'),
-        ('-created_at', 'Newest'),
-        ('priority', 'Priority'),
-        ('name', 'A to Z'),
-        ('-name', 'Z to A'),
-        ('deadline', 'Deadline (earliest)'),
-        ('-deadline', 'Deadline (latest)'),
-    ))
+    sort = forms.ChoiceField(choices=models.ORDERING)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+    def get_initial_for_field(self, field, field_name: str):
+        if field_name == 'sort' and not self.initial.get('sort') and self.user:
+            return self.user.settings.default_ordering
+        return super().get_initial_for_field(field, field_name)
 
     def clean_sort(self):
         sort = self.cleaned_data.get('sort')

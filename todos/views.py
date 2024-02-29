@@ -259,11 +259,7 @@ class ProjectDetailView(LoginRequiredMixin, FilterTodosMixin, DetailView):
         )
         qs = self.filter_todos(self.object.todo_set.with_tags())
         paginator = GracefulPaginator(qs, 10)
-        try:
-            page_number = int(self.request.GET.get('page'))
-        except (ValueError, TypeError):
-            page_number = 1
-        page = paginator.get_page(page_number)
+        page = paginator.get_page(self.request.GET.get('page', 1))
         context['page_obj'] = page
         context['todos'] = page.object_list
         context['sort_todos_form'] = forms.SortForm(initial=self.request.GET)

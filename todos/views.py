@@ -158,10 +158,6 @@ class TodoToggleCompletionView(LoginRequiredMixin, View):
         todo = get_object_or_404(models.Todo, user=request.user, pk=pk)
         todo.toggle_completion()
         return HttpResponse(headers={'HX-Trigger': 'refetchTodos'})
-        return render(
-            request, 'todos/partials/_completable.html',
-            {'completable': todo, 'class_name': request.GET.get('class_name')}
-        )
 
 
 class TodoTrashView(LoginRequiredMixin, View):
@@ -224,9 +220,7 @@ class TagRemoveView(LoginRequiredMixin, View):
 class ConvertToProjectView(LoginRequiredMixin, View):
     def post(self, request, pk):
         todo = get_object_or_404(models.Todo, user=request.user, pk=pk)
-        print(todo.pk)
         project = todo.convert_to_project()
-        print(project.pk)
         return HttpResponse(
             headers={
                 'HX-Redirect': reverse('project_detail', kwargs={'pk': project.pk})

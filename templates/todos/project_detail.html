@@ -46,7 +46,7 @@
         hx-trigger="change"
         hx-target="#todoList"
         hx-swap="outerHTML"
-        hx-include="#searchForm, #filtersForm"
+        hx-include="#searchForm, #filtersForm, #page"
         hx-push-url="true"
       >
         <div class="p-form__group">
@@ -57,7 +57,8 @@
         </div>
       </form>
     </div>
+    <input hidden name="project" value="{{ project.pk }}" form="#filtersForm">
     {% include 'todos/partials/_todo_filter_form.html' %}
-    {% include 'todos/partials/_todo_list.html' with disable_pagination=True %}
+    {% include 'todos/partials/_todo_list.html' %}
   </div>
 {% endblock %}

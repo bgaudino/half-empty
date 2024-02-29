@@ -16,49 +16,62 @@
       {% endfor %}
     </ul>
   </div>
-  {% if not disable_pagination %}
-    <nav class="p-pagination" aria-label="Pagination">
-      <ol class="p-pagination__items">
-        <li class="p-pagination__item">
-          <a
-            title="Previous page"
-            {% if page_obj.has_previous %}
-              class="p-pagination__link--previous"
-              hx-get="?page={{ page_obj.previous_page_number }}"
-              hx-target="#todoList"
-              hx-swap="outerHTML"
-              hx-push-url="true"
-              hx-include="#filtersForm, #searchForm, #sortForm"
-            {% else %}
-              class="p-pagination__link--previous is-disabled"
-              disabled
-            {% endif %}
-            >
-            <i class="p-icon--chevron-down"></i><span>Previous page</span>
-          </a>
-        </li>
-        <li class="p-pagination__item">
-          <a
-            title="Next page"
-            {% if page_obj.has_next %}
-              class="p-pagination__link--next"
-              hx-get="?page={{ page_obj.next_page_number }}"
-              hx-target="#todoList"
-              hx-swap="outerHTML"
-              hx-push-url="true"
-              hx-include="#filtersForm, #searchForm, #sortForm"
-            {% else %}
-              class="p-pagination__link--next is-disabled"
-              disabled
-            {% endif %}
-            >
-            <span>Next page</span><i class="p-icon--chevron-down"></i>
-          </a>
-        </li>
-      </ol>
-      <span class="current">
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-      </span>
-    </nav>
-  {% endif %}
+  <form
+    id="refetchTodos"
+    hx-get="{% url 'todo_list' %}"
+    hx-include="#searchForm, #sortForm, #filtersForm"
+    hx-target="#todoList"
+    hx-swap="outerHTML"
+    hx-trigger="submit"
+  >
+    <input id="page" name="page" value="{{ page_obj.number }}" hidden>
+  </form>
+  <script>
+    document.addEventListener('refetchTodos', (e) => {
+      htmx.trigger('#refetchTodos', 'submit', {});
+    });
+  </script>
+  <nav class="p-pagination" aria-label="Pagination">
+    <ol class="p-pagination__items">
+      <li class="p-pagination__item">
+        <a
+          title="Previous page"
+          {% if page_obj.has_previous %}
+            class="p-pagination__link--previous"
+            hx-get="{% url 'todo_list' %}?page={{ page_obj.previous_page_number }}"
+            hx-target="#todoList"
+            hx-swap="outerHTML"
+            hx-push-url="true"
+            hx-include="#filtersForm, #searchForm, #sortForm"
+          {% else %}
+            class="p-pagination__link--previous is-disabled"
+            disabled
+          {% endif %}
+          >
+          <i class="p-icon--chevron-down"></i><span>Previous page</span>
+        </a>
+      </li>
+      <li class="p-pagination__item">
+        <a
+          title="Next page"
+          {% if page_obj.has_next %}
+            class="p-pagination__link--next"
+            hx-get="{% url 'todo_list' %}?page={{ page_obj.next_page_number }}"
+            hx-target="#todoList"
+            hx-swap="outerHTML"
+            hx-push-url="true"
+            hx-include="#filtersForm, #searchForm, #sortForm"
+          {% else %}
+            class="p-pagination__link--next is-disabled"
+            disabled
+          {% endif %}
+          >
+          <span>Next page</span><i class="p-icon--chevron-down"></i>
+        </a>
+      </li>
+    </ol>
+    <span class="current">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+  </nav>
 </div>

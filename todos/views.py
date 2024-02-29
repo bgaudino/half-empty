@@ -1,5 +1,6 @@
 from urllib.parse import urlparse
 
+from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch
 from django.http import HttpResponseBadRequest, HttpResponse
@@ -12,18 +13,14 @@ from . import forms
 from core.views import MessageMixin
 
 
-class TodoListView(LoginRequiredMixin, ListView):
-    context_object_name = 'todos'
-    paginate_by = 10
-
-    def get_queryset(self):
+class FilterTodosMixin:
+    def filter_todos(self, qs):
         form = forms.FilterTodosForm(self.request.GET, user=self.request.user)
         form.full_clean()
         self.filters = form.cleaned_data
         sort_form = forms.SortForm(self.request.GET)
         sort_form.full_clean()
         self.filters.update(sort_form.cleaned_data)
-        qs = self.request.user.todo_set.with_tags()
         if search := self.filters.get('search'):
             qs = qs.filter(name__icontains=search)
         if tag := self.filters.get('tag'):
@@ -53,15 +50,7 @@ class TodoListView(LoginRequiredMixin, ListView):
             qs = qs.order_by('created_at', 'name')
         return qs
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if not self.request.is_htmx:
-            context['add_todo_form'] = forms.TodoForm(user=self.request.user)
-            context['add_tag_form'] = forms.AddTagForm()
-            tags = self.request.user.tag_set.all()
-            context['tags'] = tags
-            context['filter_todos_form'] = forms.FilterTodosForm(initial=self.request.GET)
-            context['sort_todos_form'] = forms.SortForm(initial=self.request.GET)
+    def get_chips(self):
         chips = []
         if search := self.filters.get('search'):
             chips.append(('Search', search))
@@ -71,6 +60,10 @@ class TodoListView(LoginRequiredMixin, ListView):
             chips.append(('Status', status.replace('_', ' ').title()))
         else:
             chips.append(('Status', 'Active'))
+        if (priority := self.filters.get('priority')) is not None:
+            priority = next(p[1] for p in models.PRIORITIES if p[0] == priority)
+            if priority:
+                chips.append(('Priority', priority))
         start = self.filters.get('deadline_start')
         end = self.filters.get('deadline_end')
         if start and end:
@@ -79,13 +72,27 @@ class TodoListView(LoginRequiredMixin, ListView):
             chips.append(('Deadline', f'{start} and later'))
         elif end:
             chips.append(('Deadline', f'{end} and earlier'))
-        context['chips'] = chips
+        return chips
 
-        # TODO: make pagination work with other views that call this via htmx
-        # This is a hack to disable pagination in these cases for now
-        if self.request.is_htmx and (referer := self.request.META.get('HTTP_REFERER')):
-            _, _, path, *_ = urlparse(referer)
-            context['disable_pagination'] = path != reverse('todo_list')
+
+class TodoListView(LoginRequiredMixin, FilterTodosMixin, ListView):
+    context_object_name = 'todos'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return self.filter_todos(self.request.user.todo_set.with_tags())
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if not self.request.is_htmx:
+            context['add_todo_form'] = forms.TodoForm(user=self.request.user)
+            context['add_tag_form'] = forms.AddTagForm()
+            tags = self.request.user.tag_set.all()
+            context['tags'] = tags
+            context['filter_todos_form'] = forms.FilterTodosForm(initial=self.request.GET)
+            context['sort_todos_form'] = forms.SortForm(initial=self.request.GET)
+        context['chips'] = self.get_chips()
+
         return context
 
     def get_template_names(self):
@@ -139,10 +146,10 @@ class TodoCreateView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, user=self.request.user)
         if form.is_valid():
-            todo = form.save()
+            form.save()
         else:
             return HttpResponseBadRequest()
-        return render(request, self.template_name, {'todo': todo})
+        return HttpResponse(headers={'HX-Trigger': 'refetchTodos'})
 
 
 class TodoToggleCompletionView(LoginRequiredMixin, View):
@@ -232,7 +239,7 @@ class ProjectListView(LoginRequiredMixin, ListView):
         return self.request.user.project_set.active().with_todo_count().all()
 
 
-class ProjectDetailView(LoginRequiredMixin, DetailView):
+class ProjectDetailView(LoginRequiredMixin, FilterTodosMixin, DetailView):
     context_object_name = 'project'
 
     def get_queryset(self):
@@ -248,8 +255,17 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
             initial=self.request.GET,
             project=self.object,
         )
+        qs = self.filter_todos(self.object.todo_set.with_tags())
+        paginator = Paginator(qs, 10)
+        try:
+            page_number = int(self.request.GET.get('page'))
+        except (ValueError, TypeError):
+            page_number = 1
+        page = paginator.get_page(page_number)
+        context['page_obj'] = page
+        context['todos'] = page.object_list
         context['sort_todos_form'] = forms.SortForm(initial=self.request.GET)
-        context['todos'] = self.object.todo_set.all()
+        context['chips'] = self.get_chips()
         return context
 
 

@@ -5,9 +5,8 @@
       aria-labelledby="checkboxLabel{{ completable.pk }}"
       class="p-checkbox__input"
       hx-post="{{ completable.get_absolute_url }}toggle_completion/?class_name={{ class_name }}"
-      hx-target="#completable-{{ completable.pk }}"
       hx-include="[name='csrfmiddlewaretoken']"
-      hx-swap="innerHTML"
+      hx-swap="none"
       hx-trigger="click"
       {% if completable.is_completed %}
         checked

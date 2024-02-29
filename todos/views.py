@@ -156,6 +156,7 @@ class TodoToggleCompletionView(LoginRequiredMixin, View):
     def post(self, request, pk):
         todo = get_object_or_404(models.Todo, user=request.user, pk=pk)
         todo.toggle_completion()
+        return HttpResponse(headers={'HX-Trigger': 'refetchTodos'})
         return render(
             request, 'todos/partials/_completable.html',
             {'completable': todo, 'class_name': request.GET.get('class_name')}
@@ -166,21 +167,21 @@ class TodoTrashView(LoginRequiredMixin, View):
     def post(self, request, pk):
         todo = get_object_or_404(models.Todo, user=request.user, pk=pk)
         todo.trash()
-        return HttpResponse()
+        return HttpResponse(headers={'HX-Trigger': 'refetchTodos'})
 
 
 class TodoRestoreView(LoginRequiredMixin, View):
     def post(self, request, pk):
         todo = get_object_or_404(request.user.todo_set.trashed(), pk=pk)
         todo.restore()
-        return HttpResponse()
+        return HttpResponse(headers={'HX-Trigger': 'refetchTodos'})
 
 
 class TodoDeleteView(LoginRequiredMixin, View):
     def post(self, request, pk):
         todo = get_object_or_404(request.user.todo_set.trashed(), pk=pk)
         todo.delete()
-        return HttpResponse()
+        return HttpResponse(headers={'HX-Trigger': 'refetchTodos'})
 
 
 class TodoDetailView(LoginRequiredMixin, DetailView):

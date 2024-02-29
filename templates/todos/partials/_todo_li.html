@@ -37,8 +37,7 @@
               class="p-contextual-menu__link"
               hx-post="{% url 'todo_restore' todo.pk %}"
               hx-include="[name=csrfmiddlewaretoken]"
-              hx-swap="delete"
-              hx-target="#todoLi-{{ todo.pk }}"
+              hx-swap="none"
             >
               Restore
             </button>
@@ -47,9 +46,8 @@
               class="p-contextual-menu__link"
               hx-post="{% url 'todo_delete' todo.pk %}"
               hx-include="[name=csrfmiddlewaretoken]"
-              hx-swap="delete"
+              hx-swap="none"
               hx-confirm="Are you sure you want to permanently delete this todo? This cannot be undone."
-              hx-target="#todoLi-{{ todo.pk }}"
             >
               Permanently Delete
             </button>
@@ -58,9 +56,8 @@
               type="button"
               class="p-contextual-menu__link"
               hx-post="{% url 'todo_trash' todo.pk %}"
-              hx-swap="delete"
+              hx-swap="none"
               hx-confirm="Are you sure you want to delete this todo?"
-              hx-target="#todoLi-{{ todo.pk }}"
             >
               Delete
             </button>

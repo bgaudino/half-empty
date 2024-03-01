@@ -5,12 +5,14 @@
   <div class="p-card">
     <div class="u-clearfix">
       <h3 class="u-float-left">
-        {% include 'todos/partials/_completable.html' with completable=todo class_name='p-checkbox--heading' %} 
+        {% include 'todos/partials/_completable.html' with completable=todo class_name='p-checkbox--heading' is_detail=True %} 
       </h3>
       <a class="p-button u-float-right" href="{% url 'todo_update' todo.pk %}">Edit</a>
     </div>
     {% if todo.project %}
-      <a href="{% url 'project_detail' todo.project.pk %}">{{ todo.project.name }}</a>
+      <p>
+        <strong>Project: </strong><a href="{% url 'project_detail' todo.project.pk %}">{{ todo.project.name }}</a>
+      </p>
     {% endif %}
     <div>
       {% include 'todos/partials/_priority.html' with todo=todo %}
@@ -18,18 +20,20 @@
         <span class="p-chip--information">{{ tag.name }}</span>
       {% endfor %}
     </div>
-    {% if todo.is_completed %}
+    <div id="completionStatus">
+      {% if todo.is_completed %}
       <p><i class="p-icon--success"></i> Completed at {{ todo.completed_at }}</p>
-    {% endif %}
+      {% endif %}
+    </div>
     {% if todo.deadline %}
       <div>
         <i class="p-icon--date"></i>
-        <span><strong>Deadline:</span></strong>
+        <div><strong>Deadline:</div></strong>
         <p>{{ todo.deadline }}</p>
       </div>
     {% endif %}
     {% if todo.description %}
-      <span><strong>Description:</strong></span>
+      <div><strong>Description:</strong></div>
       <p><pre>{{ todo.description }}</pre></p>
     {% endif %}
   </div>

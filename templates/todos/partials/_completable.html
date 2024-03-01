@@ -6,7 +6,12 @@
       class="p-checkbox__input"
       hx-post="{{ completable.get_absolute_url }}toggle_completion/?class_name={{ class_name }}"
       hx-include="[name='csrfmiddlewaretoken']"
-      hx-swap="none"
+      {% if is_detail %}
+        hx-swap="outerHTML"
+        hx-target="#completable-{{ completable.pk }}"
+      {% else %}
+        hx-swap="none"
+      {% endif %}
       hx-trigger="click"
       {% if completable.is_completed %}
         checked
@@ -24,3 +29,10 @@
     </span>
   </label>
 </div>
+{% if is_detail and request.is_htmx %}
+  <div id="completionStatus" hx-swap-oob="true">
+    {% if completable.is_completed %}
+    <p><i class="p-icon--success"></i> Completed at {{ completable.completed_at }}</p>
+    {% endif %}
+  </div>
+{% endif %}

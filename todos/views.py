@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Prefetch
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.shortcuts import get_object_or_404, render
-from django.urls import reverse
+from django.urls import resolve, reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, View
 
 from . import models
@@ -167,6 +167,14 @@ class TodoToggleCompletionView(LoginRequiredMixin, View):
     def post(self, request, pk):
         todo = get_object_or_404(models.Todo, user=request.user, pk=pk)
         todo.toggle_completion()
+        if referer := self.request.META.get('HTTP_REFERER'):
+            _, _, path, *_ = urlparse(referer)
+            if resolve(path).url_name == 'todo_detail':
+                return render(
+                    request,
+                    'todos/partials/_completable.html',
+                    {'completable': todo, 'is_detail': True, 'class_name': 'p-checkbox--heading'}
+                )
         return HttpResponse(headers={'HX-Trigger': 'refetchTodos'})
 
 

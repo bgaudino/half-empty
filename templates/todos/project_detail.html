@@ -10,7 +10,7 @@
   <div class="p-card">
     <div class="u-clearfix">
       <h3 class="u-float-left">
-        {% include 'todos/partials/_completable.html' with completable=project class_name='p-checkbox--heading' %}
+        {% include 'todos/partials/_completable.html' with completable=project class_name='p-checkbox--heading' is_detail=True %}
       </h3>
       <div class="u-float-right">
         <a class="p-button" href="{% url 'project_update' project.pk %}">Edit</a>
@@ -21,18 +21,21 @@
         <ul class="p-media-object__meta-list">
           {% if project.deadline %}
             <li class="p-media-object__meta-list-item--date">
-              <span>Deadline: </span>{{ project.deadline }}
+              <span><strong>Deadline:</strong> </span>{{ project.deadline }}
             </li>
           {% endif %}
-          {% if project.is_completed %}
-            <li>
+          <li>
+            <div id="completionStatus">
+              {% if project.is_completed %}
               <p><i class="p-icon--success"></i> Completed at {{ project.completed_at }}</p>
-            </li>
-          {% endif %}
+              {% endif %}
+            </div>
+          </li>
         </ul>
       </div>
     </div>
     {% if project.description %}
+    <div><strong>Description:</strong></div>
     <p><pre>{{ project.description }}</pre></p>
     {% endif %}
     {% include 'todos/partials/_add_todo_form.html' %}

@@ -323,5 +323,5 @@ class ProjectToggleCompletionView(LoginRequiredMixin, View):
         project.toggle_completion()
         return render(
             request, 'todos/partials/_completable.html',
-            {'completable': project, 'class_name': request.GET.get('class_name')}
+            {'completable': project, 'class_name': request.GET.get('class_name'), 'is_detail': True}
         )

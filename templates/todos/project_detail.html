@@ -38,7 +38,10 @@
     {% include 'todos/partials/_add_todo_form.html' %}
     {% csrf_token %}
     <div class="u-clearfix">
-      <h4 class="u-float-left">Todos <span class="p-badge">{{ todos|length }}</span></h4>
+      <h4 class="u-float-left">
+        <span>Todos </span>
+        <span id="todoCount" class="p-badge">{{ page_obj.paginator.object_list|length }}</span>
+      </h4>
       <form
         id="sortForm"
         class="p-form p-form--inline u-float-right"

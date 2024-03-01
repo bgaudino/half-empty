@@ -9,7 +9,10 @@
   <div class="p-card">
     {% include 'todos/partials/_add_todo_form.html' %}
     <div class="u-clearfix">
-      <h3 class="u-float-left">My Todos</h3>
+      <h3 class="u-float-left">
+        <span>My Todos </span>
+        <span id="todoCount" class="p-badge">{{ page_obj.paginator.object_list|length }}</span>
+      </h3>
       <form
         id="sortForm"
         class="p-form p-form--inline u-float-right"

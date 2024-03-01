@@ -1,3 +1,6 @@
+{% if request.is_htmx %}
+  <span id="todoCount" hx-swap-oob="true" class="p-badge">{{ page_obj.paginator.object_list|length }}</span>
+{% endif %}
 <div id="todoList">
   {% load static %}
   <script src="{% static 'js/contextualMenu.js' %}" defer></script>

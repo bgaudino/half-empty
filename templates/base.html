@@ -157,7 +157,7 @@
         window.location.hash = '#navigation-closed';
       }
     }
-    for (const link of document.querySelectorAll('.p-navigation__link')) {
+    for (const link of document.querySelectorAll('.p-navigation__link, .p-navigation__dropdown-item')) {
       link.addEventListener('click', stopPropagation);
       link.addEventListener('touchstart', stopPropagation);
     } 

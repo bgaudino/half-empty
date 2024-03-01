@@ -30,7 +30,7 @@ class TodoForm(forms.ModelForm):
         project_queryset = models.Project.objects.none()
         if self.user:
             tag_queryset = self.user.tag_set.all()
-            project_queryset = self.user.project_set.todo().all()
+            project_queryset = self.user.project_set.active().all()
         self.fields['tags'].queryset = tag_queryset
         self.fields['project'].queryset = project_queryset
 

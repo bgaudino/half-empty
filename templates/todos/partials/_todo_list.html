@@ -29,11 +29,13 @@
   >
     <input id="page" name="page" value="{{ page_obj.number }}" hidden>
   </form>
-  <script>
+  {% if not request.is_htmx %}
+  <script nonce="{{ request.csp_nonce }}">
     document.addEventListener('refetchTodos', (e) => {
       htmx.trigger('#refetchTodos', 'submit', {});
     });
   </script>
+  {% endif %}
   <nav class="p-pagination" aria-label="Pagination">
     <ol class="p-pagination__items">
       <li class="p-pagination__item">

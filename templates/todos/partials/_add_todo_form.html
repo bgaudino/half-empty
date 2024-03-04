@@ -45,7 +45,7 @@
   {% include 'todos/partials/_tag_form.html' %}
 </form>
 <button class="u-hide addTodoFields p-button--brand" type="submit" form="todoCreateForm">Add</button>
-<script>
+<script nonce="{{ request.csp_nonce }}">
   document.addEventListener('htmx:afterRequest', function({detail}) {
     if (detail.requestConfig.elt.id == 'todoCreateForm' && detail.successful) {
       detail.requestConfig.elt.reset();

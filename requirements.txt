@@ -17,7 +17,10 @@ django==4.2.9
     #   -r requirements.in
     #   dj-database-url
     #   django-authtools
+    #   django-csp
 django-authtools==2.0.0
+    # via -r requirements.in
+django-csp==3.8
     # via -r requirements.in
 gunicorn==21.2.0
     # via -r requirements.in

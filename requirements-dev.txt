@@ -23,8 +23,11 @@ django==4.2.9
     #   -r requirements.txt
     #   dj-database-url
     #   django-authtools
+    #   django-csp
     #   django-debug-toolbar
 django-authtools==2.0.0
+    # via -r requirements.txt
+django-csp==3.8
     # via -r requirements.txt
 django-debug-toolbar==4.2.0
     # via -r requirements-dev.in

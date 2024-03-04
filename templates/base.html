@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="https://assets.ubuntu.com/v1/vanilla-framework-version-4.6.0.min.css" />
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
-  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.10/dist/htmx.min.js" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
   {% block javascript %}
   {% endblock %}
   <title>Half Empty</title>
@@ -118,7 +118,7 @@
             </div>
           </div>
         {% endfor %}
-        <script>
+        <script nonce="{{ request.csp_nonce }}">
           document.addEventListener('click', function(e) {
             if (e.target.dataset.dismisses) {
               document.getElementById(e.target.dataset.dismisses).remove();
@@ -131,7 +131,7 @@
       {% endblock %}
     </div>
   </main>
-  <script>
+  <script nonce="{{ request.csp_nonce }}">
     const dropdown = document.querySelector('.p-navigation__item--dropdown-toggle');
     const controller = document.querySelector('[data-dropdown="account"]');
     const menu = document.getElementById(controller.getAttribute('aria-controls')); 

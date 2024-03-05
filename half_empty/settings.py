@@ -155,13 +155,18 @@ CONTACT_EMAIL = os.environ.get('CONTACT_EMAIL')
 CSP_STYLE_SRC = (
     "'self'",
     'https://assets.ubuntu.com/v1/vanilla-framework-version-4.6.0.min.css',
+    # htmx
     "'sha256-pgn1TCGZX6O77zDvy0oTODMOxemn0oj0LeCnQTRj7Kg='",
+    # sweetalert
+    "'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='",
+    "'sha256-UQBytKn0DQWyDg5/YC+FaQxonSsbQk4k0ErDHqBuhfw='",
 )
 CSP_IMG_SRC = ("'self'", 'data:',)
 CSP_FONT_SRC = ('https://assets.ubuntu.com/v1/',)
 CSP_INCLUDE_NONCE_IN = ('script-src',)
 CSP_SCRIPT_SRC = (
     "'self'",
+    'https://cdn.jsdelivr.net/npm/sweetalert2@11',
     'https://unpkg.com/htmx.org@1.9.10/dist/htmx.min.js',
     'https://www.google.com/recaptcha/api.js',
 )

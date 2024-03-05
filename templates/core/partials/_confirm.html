@@ -1,0 +1,22 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" integrity="sha384-F8SYeBSrTVPFojwQeAD1UQo0dI5CKJOzc992kU0M/q72tnFcDlxHwbkiw8GLrXd8" crossorigin="anonymous"></script>
+<script nonce="{{ request.csp_nonce }}">
+  document.addEventListener('htmx:confirm', function (e) {
+    if (e.detail.question) {
+      e.preventDefault()
+      Swal.fire({
+        title: 'Proceed?',
+        text: e.detail.question,
+        showCancelButton: true,
+        buttonsStyling: false,
+        confirmButtonText: 'Yes',
+        customClass: {
+          confirmButton: 'p-button--negative',
+        }
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          e.detail.issueRequest(true);
+        }
+      })
+    }
+  })
+</script>

@@ -166,7 +166,7 @@ CSP_FONT_SRC = ('https://assets.ubuntu.com/v1/',)
 CSP_INCLUDE_NONCE_IN = ('script-src',)
 CSP_SCRIPT_SRC = (
     "'self'",
-    'https://cdn.jsdelivr.net/npm/sweetalert2@11',
+    'https://cdn.jsdelivr.net/npm/sweetalert2@11.10.6/dist/sweetalert2.all.min.js',
     'https://unpkg.com/htmx.org@1.9.10/dist/htmx.min.js',
     'https://www.google.com/recaptcha/api.js',
 )

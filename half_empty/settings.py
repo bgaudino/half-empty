@@ -170,9 +170,3 @@ CSP_SCRIPT_SRC = (
     'https://unpkg.com/htmx.org@1.9.10/dist/htmx.min.js',
     'https://www.google.com/recaptcha/api.js',
 )
-
-STORAGES = {
-    'staticfiles': {
-        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
-    },
-}

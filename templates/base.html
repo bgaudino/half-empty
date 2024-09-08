@@ -80,6 +80,14 @@
               Account
             </a>
             <ul class="p-navigation__dropdown--right" id="account-menu" aria-hidden="true">
+              {% if request.user.is_superuser %}
+                <li>
+                  <a href="https://habit.fly.dev/" class="p-navigation__dropdown-item" target="_blank">Habits</a>
+                </li>
+                <li>
+                  <a href="https://brian-works-out.netlify.app/" class="p-navigation__dropdown-item" target="_blank">Workouts</a>
+                </li>
+              {% endif %}
               {% if request.user.is_authenticated %}
                 <li>
                   <a href="{% url 'profile_detail' %}" class="p-navigation__dropdown-item">Profile</a>

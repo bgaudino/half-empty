@@ -17,9 +17,3 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL = CONTACT_EMAIL
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 SITE_URL = 'https://half-empty.fly.dev'
-
-STORAGES = {
-    'staticfiles': {
-        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
-    },
-}
